@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>AI Prompts - Admin Dashboard</title>
+		<!-- Professional CSS -->
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/professional.css') }}" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+		<style>
+			/* Modern Professional AI Prompts Dashboard */
+			body {
+				font-family: "Inter", sans-serif;
+				margin: 0;
+				padding: 0;
+				background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+				color: #1a202c;
+				line-height: 1.6;
+				min-height: 100vh;
+			}
+
+			/* Header Styles - Same as main dashboard */
+			.admin-header {
+				background: rgba(255, 255, 255, 0.95);
+				backdrop-filter: blur(10px);
+				border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+				padding: 0;
+				position: sticky;
+				top: 0;
+				z-index: 100;
+				box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+			}
+
+			.admin-nav {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 1rem 2rem;
+				max-width: none;
+			}
+
+			.admin-logo {
+				display: flex;
+				align-items: center;
+				gap: 0.75rem;
+				font-size: 1.5rem;
+				font-weight: 700;
+				color: var(--primary-color);
+				text-decoration: none;
+			}
+
+			.admin-logo i {
+				background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+			}
+
+			.admin-nav-links {
+				display: flex;
+				gap: 2rem;
+				align-items: center;
+			}
+
+			.admin-nav-link {
+				color: #64748b;
+				text-decoration: none;
+				font-weight: 500;
+				font-size: 0.95rem;
+				padding: 0.5rem 1rem;
+				border-radius: var(--radius-lg);
+				transition: all var(--transition-normal);
+				position: relative;
+			}
+
+			.admin-nav-link:hover {
+				color: var(--primary-color);
+				background: rgba(13, 110, 253, 0.1);
+			}
+
+			.admin-nav-link.active {
+				color: var(--primary-color);
+				background: rgba(13, 110, 253, 0.1);
+			}
+
+			.logout-btn {
+				background: linear-gradient(135deg, #ef4444, #dc2626);
+				color: white;
+				border: none;
+				padding: 0.5rem 1rem;
+				border-radius: var(--radius-lg);
+				font-weight: 500;
+				cursor: pointer;
+				transition: all var(--transition-normal);
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+			}
+
+			.logout-btn:hover {
+				transform: translateY(-1px);
+				box-shadow: var(--shadow-lg);
+			}
+
+			/* Dashboard Layout */
+			.dashboard-container {
+				display: flex;
+				min-height: calc(100vh - 80px);
+			}
+
+			/* Sidebar - Same as main dashboard */
+			.admin-sidebar {
+				width: 280px;
+				background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+				color: white;
+				padding: 2rem 0;
+				box-shadow: var(--shadow-xl);
+				position: relative;
+			}
+
+			.admin-sidebar::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><defs><pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse"><path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+				opacity: 0.3;
+			}
+
+			.sidebar-content {
+				position: relative;
+				z-index: 2;
+			}
+
+			.sidebar-header {
+				padding: 0 2rem 2rem;
+				border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+				margin-bottom: 2rem;
+			}
+
+			.sidebar-title {
+				font-size: 1.25rem;
+				font-weight: 600;
+				color: #f1f5f9;
+				margin: 0;
+				display: flex;
+				align-items: center;
+				gap: 0.75rem;
+			}
+
+			.sidebar-menu {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+			}
+
+			.sidebar-menu-item {
+				margin-bottom: 0.5rem;
+			}
+
+			.sidebar-menu-link {
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+				padding: 1rem 2rem;
+				color: rgba(241, 245, 249, 0.8);
+				text-decoration: none;
+				transition: all var(--transition-normal);
+				border-left: 3px solid transparent;
+				font-weight: 500;
+			}
+
+			.sidebar-menu-link:hover,
+			.sidebar-menu-link.active {
+				background: rgba(255, 255, 255, 0.1);
+				color: #f1f5f9;
+				border-left-color: var(--accent-color);
+				backdrop-filter: blur(10px);
+			}
+
+			.sidebar-menu-icon {
+				width: 20px;
+				text-align: center;
+				font-size: 1.1rem;
+			}
+
+			/* Main Content */
+			.main-content {
+				flex: 1;
+				padding: 2rem;
+				background: transparent;
+			}
+
+			.dashboard-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 2rem;
+				background: white;
+				padding: 1.5rem 2rem;
+				border-radius: var(--radius-2xl);
+				box-shadow: var(--shadow-lg);
+				border: 1px solid rgba(255, 255, 255, 0.2);
+			}
+
+			.dashboard-title {
+				font-size: 2rem;
+				font-weight: 700;
+				color: #1a202c;
+				margin: 0;
+				background: linear-gradient(135deg, #1a202c, #4a5568);
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+			}
+
+			.user-info {
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+				background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+				padding: 0.75rem 1.5rem;
+				border-radius: var(--radius-xl);
+				border: 1px solid rgba(0, 0, 0, 0.05);
+			}
+
+			.user-avatar {
+				width: 40px;
+				height: 40px;
+				background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+				border-radius: 50%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: white;
+				font-weight: 600;
+			}
+
+			.user-details h4 {
+				margin: 0;
+				font-size: 0.9rem;
+				font-weight: 600;
+				color: #1a202c;
+			}
+
+			.user-details p {
+				margin: 0;
+				font-size: 0.8rem;
+				color: #64748b;
+			}
+
+			/* Grid Layout for Forms and Tables */
+			.content-grid {
+				display: grid;
+				grid-template-columns: 1fr 2fr;
+				gap: 2rem;
+				margin-bottom: 2rem;
+			}
+
+			/* Form Section */
+			.form-section {
+				background: white;
+				border-radius: var(--radius-2xl);
+				padding: 2rem;
+				box-shadow: var(--shadow-lg);
+				border: 1px solid rgba(255, 255, 255, 0.2);
+				height: fit-content;
+			}
+
+			.form-title {
+				font-size: 1.5rem;
+				font-weight: 600;
+				color: #1a202c;
+				margin: 0 0 1.5rem 0;
+				display: flex;
+				align-items: center;
+				gap: 0.75rem;
+			}
+
+			.form-title i {
+				width: 40px;
+				height: 40px;
+				background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+				border-radius: var(--radius-lg);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: white;
+				font-size: 1rem;
+			}
+
+			.form-group {
+				margin-bottom: 1.5rem;
+			}
+
+			.form-label {
+				font-weight: 600;
+				color: #374151;
+				margin-bottom: 0.5rem;
+				font-size: 0.875rem;
+				display: block;
+			}
+
+			.form-control {
+				width: 100%;
+				padding: 0.75rem;
+				border: 2px solid #e5e7eb;
+				border-radius: var(--radius-lg);
+				background: white;
+				color: #374151;
+				font-size: 0.875rem;
+				transition: all var(--transition-normal);
+				box-sizing: border-box;
+			}
+
+			.form-control:focus {
+				outline: none;
+				border-color: var(--primary-color);
+				box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+			}
+
+			.form-control.textarea {
+				min-height: 150px;
+				resize: vertical;
+				font-family: 'Fira Code', 'Monaco', 'Courier New', monospace;
+			}
+
+			.btn {
+				padding: 0.75rem 1.5rem;
+				border-radius: var(--radius-lg);
+				font-weight: 600;
+				font-size: 0.875rem;
+				text-decoration: none;
+				border: none;
+				cursor: pointer;
+				transition: all var(--transition-normal);
+				display: inline-flex;
+				align-items: center;
+				gap: 0.5rem;
+			}
+
+			.btn-primary {
+				background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+				color: white;
+			}
+
+			.btn-primary:hover {
+				transform: translateY(-1px);
+				box-shadow: var(--shadow-lg);
+			}
+
+			.btn-secondary {
+				background: linear-gradient(135deg, #6b7280, #4b5563);
+				color: white;
+			}
+
+			.btn-secondary:hover {
+				transform: translateY(-1px);
+				box-shadow: var(--shadow-lg);
+			}
+
+			.btn-full {
+				width: 100%;
+				justify-content: center;
+			}
+
+			/* Table Section */
+			.table-section {
+				background: white;
+				border-radius: var(--radius-2xl);
+				padding: 2rem;
+				box-shadow: var(--shadow-lg);
+				border: 1px solid rgba(255, 255, 255, 0.2);
+			}
+
+			.table-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 1.5rem;
+			}
+
+			.table-title {
+				font-size: 1.5rem;
+				font-weight: 600;
+				color: #1a202c;
+				margin: 0;
+			}
+
+			.modern-table {
+				width: 100%;
+				border-collapse: collapse;
+				margin-top: 1rem;
+			}
+
+			.modern-table th {
+				background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+				color: #374151;
+				font-weight: 600;
+				padding: 1rem 1.5rem;
+				text-align: left;
+				border-bottom: 2px solid #e2e8f0;
+				font-size: 0.875rem;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
+			}
+
+			.modern-table td {
+				padding: 1rem 1.5rem;
+				border-bottom: 1px solid #f1f5f9;
+				color: #374151;
+				vertical-align: top;
+			}
+
+			.modern-table tbody tr {
+				transition: all var(--transition-normal);
+			}
+
+			.modern-table tbody tr:hover {
+				background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+				transform: translateX(4px);
+			}
+
+			/* Status Badges */
+			.status-badge {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.5rem;
+				padding: 0.5rem 1rem;
+				border-radius: var(--radius-lg);
+				font-size: 0.875rem;
+				font-weight: 500;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
+			}
+
+			.status-badge.active {
+				background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+				color: #166534;
+			}
+
+			.status-badge.inactive {
+				background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+				color: #64748b;
+			}
+
+			/* Job Type Badges */
+			.job-type-badge {
+				display: inline-block;
+				padding: 0.25rem 0.75rem;
+				border-radius: var(--radius-lg);
+				font-size: 0.75rem;
+				font-weight: 500;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
+				background: linear-gradient(135deg, #e0f2fe, #b3e5fc);
+				color: #0277bd;
+			}
+
+			/* Prompt Template Display */
+			.prompt-template {
+				max-width: 300px;
+				font-family: 'Fira Code', 'Monaco', 'Courier New', monospace;
+				font-size: 0.75rem;
+				background: #f8fafc;
+				padding: 0.5rem;
+				border-radius: var(--radius-lg);
+				border-left: 3px solid var(--primary-color);
+				white-space: pre-wrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				max-height: 100px;
+				overflow-y: auto;
+			}
+
+			/* Action Buttons */
+			.action-buttons {
+				display: flex;
+				gap: 0.5rem;
+			}
+
+			.btn-sm {
+				padding: 0.5rem;
+				font-size: 0.875rem;
+				min-width: auto;
+			}
+
+			.btn-info {
+				background: linear-gradient(135deg, #06b6d4, #0891b2);
+				color: white;
+			}
+
+			.btn-danger {
+				background: linear-gradient(135deg, #ef4444, #dc2626);
+				color: white;
+			}
+
+			.btn-warning {
+				background: linear-gradient(135deg, #f59e0b, #d97706);
+				color: white;
+			}
+
+			.btn-success {
+				background: linear-gradient(135deg, #10b981, #059669);
+				color: white;
+			}
+
+			/* Responsive Design */
+			@media (max-width: 1024px) {
+				.dashboard-container {
+					flex-direction: column;
+				}
+
+				.admin-sidebar {
+					width: 100%;
+					padding: 1rem 0;
+				}
+
+				.sidebar-menu {
+					display: flex;
+					overflow-x: auto;
+					padding: 0 1rem;
+				}
+
+				.sidebar-menu-item {
+					margin-bottom: 0;
+					margin-right: 0.5rem;
+					white-space: nowrap;
+				}
+
+				.main-content {
+					padding: 1rem;
+				}
+
+				.content-grid {
+					grid-template-columns: 1fr;
+					gap: 1rem;
+				}
+			}
+
+			@media (max-width: 768px) {
+				.admin-nav {
+					padding: 1rem;
+					flex-direction: column;
+					gap: 1rem;
+				}
+
+				.admin-nav-links {
+					flex-wrap: wrap;
+					justify-content: center;
+				}
+
+				.dashboard-header {
+					flex-direction: column;
+					gap: 1rem;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<!-- Modern Admin Header -->
+		<header class="admin-header">
+			<nav class="admin-nav">
+				<a href="/" class="admin-logo">
+					<i class="fas fa-brain"></i>
+					Resume AI
+				</a>
+				<div class="admin-nav-links">
+					<a href="{{ url_for('admin.dashboard') }}" class="admin-nav-link">
+						<i class="fas fa-tachometer-alt"></i>
+						Dashboard
+					</a>
+					<a href="{{ url_for('admin.resume_dashboard') }}" class="admin-nav-link">
+						<i class="fas fa-file-alt"></i>
+						Resumes
+					</a>
+					<a href="{{ url_for('admin.job_categories_page') }}" class="admin-nav-link">
+						<i class="fas fa-briefcase"></i>
+						Categories
+					</a>
+					<a href="{{ url_for('admin.prompts_management_page') }}" class="admin-nav-link active">
+						<i class="fas fa-comment-dots"></i>
+						AI Prompts
+					</a>
+					<button id="logout-link" class="logout-btn">
+						<i class="fas fa-sign-out-alt"></i>
+						Logout
+					</button>
+				</div>
+			</nav>
+		</header>
+
+		<div class="dashboard-container">
+			<!-- Modern Sidebar -->
+			<aside class="admin-sidebar">
+				<div class="sidebar-content">
+					<div class="sidebar-header">
+						<h3 class="sidebar-title">
+							<i class="fas fa-shield-alt"></i>
+							Admin Control
+						</h3>
+					</div>
+					<ul class="sidebar-menu">
+						<li class="sidebar-menu-item">
+							<a href="{{ url_for('admin.dashboard') }}" class="sidebar-menu-link">
+								<i class="fas fa-chart-pie sidebar-menu-icon"></i>
+								Dashboard Overview
+							</a>
+						</li>
+						<li class="sidebar-menu-item">
+							<a href="{{ url_for('admin.resume_dashboard') }}" class="sidebar-menu-link">
+								<i class="fas fa-file-alt sidebar-menu-icon"></i>
+								Resume Management
+							</a>
+						</li>
+						<li class="sidebar-menu-item">
+							<a href="{{ url_for('admin.job_categories_page') }}" class="sidebar-menu-link">
+								<i class="fas fa-briefcase sidebar-menu-icon"></i>
+								Job Categories
+							</a>
+						</li>
+						<li class="sidebar-menu-item">
+							<a href="{{ url_for('admin.prompts_management_page') }}" class="sidebar-menu-link active">
+								<i class="fas fa-comment-dots sidebar-menu-icon"></i>
+								AI Prompts
+							</a>
+						</li>
+						<li class="sidebar-menu-item">
+							<a href="#" class="sidebar-menu-link">
+								<i class="fas fa-chart-line sidebar-menu-icon"></i>
+								Analytics
+							</a>
+						</li>
+						<li class="sidebar-menu-item">
+							<a href="#" class="sidebar-menu-link">
+								<i class="fas fa-cog sidebar-menu-icon"></i>
+								Settings
+							</a>
+						</li>
+					</ul>
+				</div>
+			</aside>
+
+			<!-- Main Content Area -->
+			<main class="main-content">
+				<!-- Dashboard Header -->
+				<div class="dashboard-header">
+					<h1 class="dashboard-title">AI Prompts</h1>
+					<div class="user-info">
+						<div class="user-avatar">A</div>
+						<div class="user-details">
+							<h4>Administrator</h4>
+							<p>AI Prompt Manager</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Content Grid -->
+				<div class="content-grid">
+					<!-- Add AI Prompt Form -->
+					<div class="form-section">
+						<h3 class="form-title">
+							<i class="fas fa-plus"></i>
+							Add AI Prompt
+						</h3>
+						<form id="prompt-form" method="POST" action="{{ url_for('admin.create_prompt') }}">
+							<input type="hidden" name="prompt_id" value="" />
+							<div class="form-group">
+								<label for="name" class="form-label">Prompt Name</label>
+								<input type="text" id="name" name="name" class="form-control" required placeholder="e.g., Software Engineer Resume Analysis" />
+							</div>
+							<div class="form-group">
+								<label for="description" class="form-label">Description</label>
+								<textarea id="description" name="description" class="form-control" placeholder="Brief description of what this prompt does"></textarea>
+							</div>
+							<div class="form-group">
+								<label for="job_type" class="form-label">Job Type</label>
+								<select id="job_type" name="job_type" class="form-control" required>
+									<option value="">Select Job Type</option>
+									<option value="Software Engineer">Software Engineer</option>
+									<option value="Data Scientist">Data Scientist</option>
+									<option value="Marketing Specialist">Marketing Specialist</option>
+									<option value="Product Manager">Product Manager</option>
+									<option value="UX Designer">UX Designer</option>
+									<option value="Sales Representative">Sales Representative</option>
+									<option value="Customer Support">Customer Support</option>
+									<option value="Project Manager">Project Manager</option>
+									<option value="HR Specialist">HR Specialist</option>
+									<option value="Financial Analyst">Financial Analyst</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="version" class="form-label">Version</label>
+								<input type="text" id="version" name="version" class="form-control" value="1.0" placeholder="1.0" />
+							</div>
+							<div class="form-group">
+								<label for="prompt_template" class="form-label">Prompt Template</label>
+								<textarea id="prompt_template" name="prompt_template" class="form-control textarea" required placeholder="Enter your AI prompt template here...
+
+You can use variables like:
+{resume_text} - The extracted text from the resume
+{job_description} - The job description
+{job_title} - The job title
+{job_requirements} - The job requirements
+{job_qualifications} - The job qualifications"></textarea>
+							</div>
+							<div class="form-group">
+								<button type="submit" class="btn btn-primary btn-full">
+									<i class="fas fa-plus"></i>
+									Add Prompt
+								</button>
+								<button type="button" class="btn btn-secondary btn-full" id="reset-form" style="display: none; margin-top: 0.5rem;">
+									<i class="fas fa-times"></i>
+									Cancel
+								</button>
+							</div>
+						</form>
+					</div>
+
+					<!-- AI Prompts Table -->
+					<div class="table-section">
+						<div class="table-header">
+							<h3 class="table-title">AI Prompts</h3>
+						</div>
+						<table class="modern-table">
+							<thead>
+								<tr>
+									<th>ID</th>
+									<th>Name</th>
+									<th>Job Type</th>
+									<th>Version</th>
+									<th>Status</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for prompt in prompts %}
+								<tr>
+									<td><strong>{{ prompt.id }}</strong></td>
+									<td>
+										<div style="display: flex; align-items: center; gap: 0.75rem;">
+											<div style="width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.875rem;">
+												{{ prompt.name[0] if prompt.name else 'P' }}
+											</div>
+											<div>
+												<div style="font-weight: 500;">{{ prompt.name }}</div>
+												{% if prompt.description %}
+												<div style="font-size: 0.75rem; color: #6b7280;">{{ prompt.description[:50] }}{% if prompt.description|length > 50 %}...{% endif %}</div>
+												{% endif %}
+											</div>
+										</div>
+									</td>
+									<td>
+										<span class="job-type-badge">{{ prompt.job_type }}</span>
+									</td>
+									<td><strong>{{ prompt.version }}</strong></td>
+									<td>
+										<span class="status-badge {% if prompt.is_active %}active{% else %}inactive{% endif %}">
+											<i class="fas fa-{% if prompt.is_active %}check-circle{% else %}times-circle{% endif %}"></i>
+											{% if prompt.is_active %}Active{% else %}Inactive{% endif %}
+										</span>
+									</td>
+									<td class="action-buttons">
+										<button class="btn btn-sm btn-info view-prompt" data-id="{{ prompt.id }}" title="View Template">
+											<i class="fas fa-eye"></i>
+										</button>
+										<button class="btn btn-sm btn-warning edit-prompt" data-id="{{ prompt.id }}" data-name="{{ prompt.name }}" data-description="{{ prompt.description or '' }}" data-job-type="{{ prompt.job_type }}" data-version="{{ prompt.version }}" data-template="{{ prompt.prompt_template }}" title="Edit">
+											<i class="fas fa-edit"></i>
+										</button>
+										<button class="btn btn-sm btn-success test-prompt" data-id="{{ prompt.id }}" title="Test Prompt">
+											<i class="fas fa-play"></i>
+										</button>
+										<button class="btn btn-sm btn-danger delete-prompt" data-id="{{ prompt.id }}" title="Delete">
+											<i class="fas fa-trash"></i>
+										</button>
+									</td>
+								</tr>
+								{% else %}
+								<tr>
+									<td colspan="6" style="text-align: center; padding: 3rem; color: #6b7280;">
+										<i class="fas fa-comment-dots" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+										<div>No AI prompts found</div>
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</main>
+		</div>
+
+		<!-- Prompt View Modal -->
+		<div class="modal-overlay" id="prompt-modal" style="display: none;">
+			<div class="modal-content" style="max-width: 800px;">
+				<div class="modal-header">
+					<h3 class="modal-title">View Prompt Template</h3>
+					<button class="close-modal" type="button">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div style="margin-bottom: 1rem;">
+						<strong>Prompt Name:</strong> <span id="modal-prompt-name"></span>
+					</div>
+					<div style="margin-bottom: 1rem;">
+						<strong>Job Type:</strong> <span id="modal-job-type"></span>
+					</div>
+					<div style="margin-bottom: 1rem;">
+						<strong>Template:</strong>
+					</div>
+					<pre id="modal-prompt-template" style="background: #f8fafc; padding: 1rem; border-radius: var(--radius-lg); font-family: 'Fira Code', monospace; font-size: 0.875rem; white-space: pre-wrap; max-height: 400px; overflow-y: auto;"></pre>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modern Footer -->
+		<footer class="admin-footer">
+			<p>&copy; 2025 Resume AI. Transforming hiring with intelligent technology.</p>
+		</footer>
+
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				// Enhanced logout functionality
+				document.getElementById("logout-link").addEventListener("click", function () {
+					handleLogout();
+				});
+
+				// Sidebar navigation active state
+				const sidebarLinks = document.querySelectorAll('.sidebar-menu-link');
+				const currentPath = window.location.pathname;
+				
+				sidebarLinks.forEach(link => {
+					if (link.getAttribute('href') === currentPath) {
+						sidebarLinks.forEach(l => l.classList.remove('active'));
+						link.classList.add('active');
+					}
+				});
+
+				// Handle view prompt buttons
+				document.querySelectorAll('.view-prompt').forEach(button => {
+					button.addEventListener('click', function() {
+						const promptId = this.getAttribute('data-id');
+						viewPrompt(promptId);
+					});
+				});
+
+				// Handle edit prompt buttons
+				document.querySelectorAll('.edit-prompt').forEach(button => {
+					button.addEventListener('click', function() {
+						const promptId = this.getAttribute('data-id');
+						const promptName = this.getAttribute('data-name');
+						const promptDescription = this.getAttribute('data-description');
+						const jobType = this.getAttribute('data-job-type');
+						const version = this.getAttribute('data-version');
+						const template = this.getAttribute('data-template');
+						
+						// Fill form with prompt data
+						document.querySelector('[name="prompt_id"]').value = promptId;
+						document.getElementById('name').value = promptName;
+						document.getElementById('description').value = promptDescription;
+						document.getElementById('job_type').value = jobType;
+						document.getElementById('version').value = version;
+						document.getElementById('prompt_template').value = template;
+						
+						// Update form title and button
+						document.querySelector('.form-title').innerHTML = '<i class="fas fa-edit"></i> Edit AI Prompt';
+						document.querySelector('[type="submit"]').innerHTML = '<i class="fas fa-save"></i> Update Prompt';
+						document.getElementById('reset-form').style.display = 'block';
+					});
+				});
+
+				// Handle test prompt buttons
+				document.querySelectorAll('.test-prompt').forEach(button => {
+					button.addEventListener('click', function() {
+						const promptId = this.getAttribute('data-id');
+						testPrompt(promptId);
+					});
+				});
+
+				// Handle delete prompt buttons
+				document.querySelectorAll('.delete-prompt').forEach(button => {
+					button.addEventListener('click', function() {
+						const promptId = this.getAttribute('data-id');
+						if (confirm('Are you sure you want to delete this AI prompt?')) {
+							deletePrompt(promptId);
+						}
+					});
+				});
+
+				// Handle reset form button
+				document.getElementById('reset-form').addEventListener('click', function() {
+					resetForm();
+				});
+
+				// Handle form submission
+				document.getElementById('prompt-form').addEventListener('submit', function(e) {
+					e.preventDefault();
+					const formData = new FormData(this);
+					const promptId = formData.get('prompt_id');
+					
+					if (promptId) {
+						updatePrompt(promptId, formData);
+					} else {
+						createPrompt(formData);
+					}
+				});
+
+				// Handle modal close
+				document.querySelector('.close-modal').addEventListener('click', function() {
+					document.getElementById('prompt-modal').style.display = 'none';
+				});
+
+				// Close modal when clicking outside
+				window.addEventListener('click', function(event) {
+					const modal = document.getElementById('prompt-modal');
+					if (event.target === modal) {
+						modal.style.display = 'none';
+					}
+				});
+			});
+
+			// Enhanced logout function
+			function handleLogout() {
+				if (confirm('Are you sure you want to logout?')) {
+					// Clear authentication data
+					document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+					document.cookie = "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+					localStorage.removeItem("access_token");
+					localStorage.removeItem("refresh_token");
+					sessionStorage.clear();
+
+					// Show logout message
+					showNotification('Logged out successfully', 'success');
+
+					// Redirect after short delay
+					setTimeout(() => {
+						window.location.href = "/admin/login";
+					}, 1000);
+				}
+			}
+
+			// View prompt details
+			function viewPrompt(promptId) {
+				fetch(`/admin/api/prompts/${promptId}`, {
+					headers: {
+						'Authorization': `Bearer ${getToken()}`
+					}
+				})
+				.then(response => response.json())
+				.then(prompt => {
+					document.getElementById('modal-prompt-name').textContent = prompt.name;
+					document.getElementById('modal-job-type').textContent = prompt.job_type;
+					document.getElementById('modal-prompt-template').textContent = prompt.prompt_template;
+					document.getElementById('prompt-modal').style.display = 'flex';
+				})
+				.catch(error => {
+					console.error('Error:', error);
+					showNotification('An error occurred while loading prompt details', 'error');
+				});
+			}
+
+			// Create new prompt
+			function createPrompt(formData) {
+				fetch('/admin/api/prompts', {
+					method: 'POST',
+					headers: {
+						'Authorization': `Bearer ${getToken()}`
+					},
+					body: formData
+				})
+				.then(response => response.json())
+				.then(data => {
+					if (data.error) {
+						showNotification(data.error, 'error');
+					} else {
+						showNotification('AI prompt created successfully!', 'success');
+						setTimeout(() => {
+							window.location.reload();
+						}, 1500);
+					}
+				})
+				.catch(error => {
+					console.error('Error:', error);
+					showNotification('An error occurred while creating the prompt', 'error');
+				});
+			}
+
+			// Update existing prompt
+			function updatePrompt(promptId, formData) {
+				fetch(`/admin/api/prompts/${promptId}`, {
+					method: 'PUT',
+					headers: {
+						'Authorization': `Bearer ${getToken()}`
+					},
+					body: formData
+				})
+				.then(response => response.json())
+				.then(data => {
+					if (data.error) {
+						showNotification(data.error, 'error');
+					} else {
+						showNotification('AI prompt updated successfully!', 'success');
+						setTimeout(() => {
+							window.location.reload();
+						}, 1500);
+					}
+				})
+				.catch(error => {
+					console.error('Error:', error);
+					showNotification('An error occurred while updating the prompt', 'error');
+				});
+			}
+
+			// Test prompt
+			function testPrompt(promptId) {
+				showNotification('Testing prompt...', 'info');
+				
+				fetch(`/admin/prompts/test`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${getToken()}`
+					},
+					body: JSON.stringify({ prompt_id: promptId })
+				})
+				.then(response => response.json())
+				.then(data => {
+					if (data.error) {
+						showNotification(data.error, 'error');
+					} else {
+						showNotification('Prompt test completed successfully!', 'success');
+					}
+				})
+				.catch(error => {
+					console.error('Error:', error);
+					showNotification('An error occurred while testing the prompt', 'error');
+				});
+			}
+
+			// Delete prompt
+			function deletePrompt(promptId) {
+				fetch(`/admin/api/prompts/${promptId}`, {
+					method: 'DELETE',
+					headers: {
+						'Authorization': `Bearer ${getToken()}`
+					}
+				})
+				.then(response => response.json())
+				.then(data => {
+					if (data.error) {
+						showNotification(data.error, 'error');
+					} else {
+						showNotification('AI prompt deleted successfully!', 'success');
+						setTimeout(() => {
+							window.location.reload();
+						}, 1500);
+					}
+				})
+				.catch(error => {
+					console.error('Error:', error);
+					showNotification('An error occurred while deleting the prompt', 'error');
+				});
+			}
+
+			// Reset form to add mode
+			function resetForm() {
+				document.getElementById('prompt-form').reset();
+				document.querySelector('[name="prompt_id"]').value = '';
+				document.querySelector('.form-title').innerHTML = '<i class="fas fa-plus"></i> Add AI Prompt';
+				document.querySelector('[type="submit"]').innerHTML = '<i class="fas fa-plus"></i> Add Prompt';
+				document.getElementById('reset-form').style.display = 'none';
+			}
+
+			// Enhanced notification system
+			function showNotification(message, type = 'info') {
+				const notification = document.createElement('div');
+				notification.className = `notification ${type}`;
+				notification.style.cssText = `
+					position: fixed;
+					top: 20px;
+					right: 20px;
+					background: ${type === 'success' ? 'linear-gradient(135deg, #10b981, #059669)' : 
+								 type === 'error' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : 
+								 'linear-gradient(135deg, #3b82f6, #2563eb)'};
+					color: white;
+					padding: 1rem 1.5rem;
+					border-radius: 12px;
+					box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+					z-index: 1000;
+					font-weight: 500;
+					transform: translateX(100%);
+					transition: transform 0.3s ease;
+					display: flex;
+					align-items: center;
+					gap: 0.75rem;
+					max-width: 400px;
+				`;
+				
+				const icon = type === 'success' ? 'fas fa-check-circle' : 
+							 type === 'error' ? 'fas fa-exclamation-circle' : 'fas fa-info-circle';
+				
+				notification.innerHTML = `
+					<i class="${icon}"></i>
+					<span>${message}</span>
+					<button style="background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem;" onclick="this.parentElement.remove()">×</button>
+				`;
+
+				document.body.appendChild(notification);
+
+				// Animate in
+				setTimeout(() => {
+					notification.style.transform = 'translateX(0)';
+				}, 100);
+
+				// Auto remove
+				setTimeout(() => {
+					notification.style.transform = 'translateX(100%)';
+					setTimeout(() => {
+						if (document.body.contains(notification)) {
+							document.body.removeChild(notification);
+						}
+					}, 300);
+				}, 4000);
+			}
+
+			// Utility functions
+			function getToken() {
+				const cookieToken = getCookie("access_token");
+				if (cookieToken) return cookieToken;
+				return localStorage.getItem("access_token");
+			}
+
+			function getCookie(name) {
+				const value = `; ${document.cookie}`;
+				const parts = value.split(`; ${name}=`);
+				if (parts.length === 2) return parts.pop().split(";").shift();
+				return null;
+			}
+		</script>
+	</body>
+</html>

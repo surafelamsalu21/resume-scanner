@@ -1,0 +1,85 @@
+{% extends "admin_resume_dashboard.html" %} {% block page_title %}Approved
+Resumes{% endblock %} {% block dashboard_title %}
+<h2 class="dashboard-title">{{ page_title }}</h2>
+{% endblock %} {% block action_buttons %}
+<td class="action-buttons">
+	<a
+		href="{{ url_for('admin.view_resume', resume_id=resume.id) }}"
+		class="btn btn-sm btn-info"
+		title="View Details"
+	>
+		<i class="fas fa-eye"></i>
+	</a>
+	<button
+		class="btn btn-sm btn-danger reject-cv"
+		data-id="{{ resume.id }}"
+		title="Reject"
+	>
+		<i class="fas fa-times"></i>
+	</button>
+	<button
+		class="btn btn-sm btn-secondary add-feedback"
+		data-id="{{ resume.id }}"
+		title="Add Feedback"
+	>
+		<i class="fas fa-comment"></i>
+	</button>
+</td>
+{% endblock %} {% block navigation_links %}
+<div class="nav-links">
+	<a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+	<a href="{{ url_for('admin.resume_dashboard') }}">All Resumes</a>
+	<a href="{{ url_for('admin.approved_resumes') }}" class="active"
+		>Approved</a
+	>
+	<a href="{{ url_for('admin.rejected_resumes') }}">Rejected</a>
+	<a href="{{ url_for('admin.shortlisted_resumes') }}">Shortlisted</a>
+	<a href="{{ url_for('admin.job_categories_page') }}">Job Categories</a>
+	<a href="{{ url_for('admin.prompts_management_page') }}">AI Prompts</a>
+	<a href="#" id="logout-link">Logout</a>
+</div>
+{% endblock %} {% block sidebar_menu %}
+<ul class="sidebar-menu">
+	<li>
+		<a href="{{ url_for('admin.dashboard') }}">
+			<i class="fas fa-tachometer-alt"></i>
+			Dashboard
+		</a>
+	</li>
+	<li>
+		<a href="{{ url_for('admin.resume_dashboard') }}">
+			<i class="fas fa-file-alt"></i> All Resumes
+		</a>
+	</li>
+	<li>
+		<a href="{{ url_for('admin.approved_resumes') }}" class="active">
+			<i class="fas fa-check-circle"></i> Approved
+		</a>
+	</li>
+	<li>
+		<a href="{{ url_for('admin.rejected_resumes') }}">
+			<i class="fas fa-times-circle"></i> Rejected
+		</a>
+	</li>
+	<li>
+		<a href="{{ url_for('admin.shortlisted_resumes') }}">
+			<i class="fas fa-star"></i> Shortlisted
+		</a>
+	</li>
+	<li>
+		<a href="{{ url_for('admin.job_categories_page') }}">
+			<i class="fas fa-tags"></i> Job Categories
+		</a>
+	</li>
+	<li>
+		<a href="{{ url_for('admin.prompts_management_page') }}">
+			<i class="fas fa-comment-dots"></i> AI Prompts
+		</a>
+	</li>
+	<li>
+		<a href="{{ url_for('admin.manage_settings') }}">
+			<i class="fas fa-cog"></i> Settings
+		</a>
+	</li>
+</ul>
+{% endblock %}

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
+		<title>Error - Resume AI</title>
+		<link
+			rel="stylesheet"
+			href="{{ url_for('static', filename='css/style.css') }}"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+		/>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+		<style>
+			.error-container {
+				max-width: 600px;
+				margin: 100px auto;
+				padding: 30px;
+				background-color: var(--card-bg);
+				border-radius: var(--border-radius);
+				box-shadow: var(--box-shadow);
+				text-align: center;
+			}
+
+			.error-icon {
+				font-size: 64px;
+				color: var(--danger-color);
+				margin-bottom: 20px;
+			}
+
+			.error-title {
+				font-size: 28px;
+				margin-bottom: 15px;
+				color: var(--dark-color);
+			}
+
+			.error-message {
+				color: var(--secondary-color);
+				margin-bottom: 30px;
+			}
+
+			.actions {
+				display: flex;
+				justify-content: center;
+				gap: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<div class="container">
+				<nav class="navbar">
+					<a href="/" class="logo">Resume AI</a>
+					<div class="nav-links">
+						<a href="/#features">Features</a>
+						<a href="/#how-it-works">How It Works</a>
+						<a href="/#about">About</a>
+						<a href="/admin/login">Admin Login</a>
+					</div>
+				</nav>
+			</div>
+		</header>
+
+		<div class="container">
+			<div class="error-container">
+				<div class="error-icon">
+					<i class="fas fa-exclamation-circle"></i>
+				</div>
+				<h2 class="error-title">
+					{{ error_title|default('An Error Occurred') }}
+				</h2>
+				<p class="error-message">
+					{{ error_message|default('Something went wrong. Please
+					try again later.') }}
+				</p>
+				<div class="actions">
+					<a href="/" class="btn">
+						<i class="fas fa-home"></i> Back to Home
+					</a>
+					<a href="/api/resume/upload" class="btn btn-secondary">
+						<i class="fas fa-upload"></i> Try Again
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<footer>
+			<div class="container">
+				<div class="footer-content">
+					<a href="/" class="logo">Resume AI</a>
+					<div class="footer-links">
+						<a href="/#features">Features</a>
+						<a href="/#how-it-works">How It Works</a>
+						<a href="/#about">About</a>
+						<a href="/privacy">Privacy Policy</a>
+						<a href="/terms">Terms of Service</a>
+					</div>
+					<p class="copyright">
+						&copy; 2025 Resume AI. All rights reserved.
+					</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

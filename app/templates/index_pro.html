@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume AI - Intelligent Resume Processing</title>
+    
+    <!-- Professional CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/professional.css') }}">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--white);
+            padding: var(--spacing-20) 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><defs><radialGradient id="a" cx="50" cy="50" r="50"><stop offset="0" stop-color="%23fff" stop-opacity=".1"/><stop offset="1" stop-color="%23fff" stop-opacity="0"/></radialGradient></defs><circle cx="10" cy="10" r="10" fill="url(%23a)"/><circle cx="30" cy="10" r="10" fill="url(%23a)"/><circle cx="50" cy="10" r="10" fill="url(%23a)"/><circle cx="70" cy="10" r="10" fill="url(%23a)"/><circle cx="90" cy="10" r="10" fill="url(%23a)"/></svg>') repeat;
+            opacity: 0.1;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: var(--font-size-4xl);
+            font-weight: 700;
+            margin-bottom: var(--spacing-6);
+            color: var(--white);
+        }
+
+        .hero p {
+            font-size: var(--font-size-xl);
+            margin-bottom: var(--spacing-8);
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+        }
+
+        .hero .btn-primary {
+            background: var(--white);
+            color: var(--primary-color);
+            font-size: var(--font-size-lg);
+            padding: var(--spacing-4) var(--spacing-8);
+            border-radius: var(--radius-xl);
+            font-weight: 600;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .hero .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        /* Upload Section */
+        .upload-section {
+            padding: var(--spacing-20) 0;
+            background: var(--gray-50);
+        }
+
+        .upload-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-xl);
+            padding: var(--spacing-12);
+        }
+
+        .upload-header {
+            text-align: center;
+            margin-bottom: var(--spacing-8);
+        }
+
+        .upload-title {
+            font-size: var(--font-size-3xl);
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .upload-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--gray-600);
+        }
+
+        .upload-area {
+            border: 2px dashed var(--gray-300);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-12);
+            text-align: center;
+            transition: all var(--transition-normal);
+            cursor: pointer;
+            margin-bottom: var(--spacing-8);
+        }
+
+        .upload-area:hover,
+        .upload-area.dragover {
+            border-color: var(--primary-color);
+            background-color: var(--primary-light);
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .upload-text {
+            font-size: var(--font-size-lg);
+            color: var(--gray-700);
+            margin-bottom: var(--spacing-2);
+        }
+
+        .upload-hint {
+            font-size: var(--font-size-sm);
+            color: var(--gray-500);
+        }
+
+        .job-role-selection {
+            margin-bottom: var(--spacing-8);
+        }
+
+        .job-role-label {
+            display: block;
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .job-role-select {
+            width: 100%;
+            padding: var(--spacing-4);
+            font-size: var(--font-size-base);
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-lg);
+            background-color: var(--white);
+        }
+
+        .upload-actions {
+            display: flex;
+            gap: var(--spacing-4);
+            justify-content: center;
+        }
+
+        /* Features Section */
+        .features {
+            padding: var(--spacing-20) 0;
+            background: var(--white);
+        }
+
+        .features-header {
+            text-align: center;
+            margin-bottom: var(--spacing-16);
+        }
+
+        .features-title {
+            font-size: var(--font-size-3xl);
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .features-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--gray-600);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-8);
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: var(--spacing-8);
+            border-radius: var(--radius-xl);
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            transition: all var(--transition-normal);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto var(--spacing-6);
+            border-radius: var(--radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-2xl);
+            color: var(--white);
+        }
+
+        .feature-icon.ai {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        }
+
+        .feature-icon.fast {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+        }
+
+        .feature-icon.accurate {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .feature-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .feature-description {
+            color: var(--gray-600);
+            line-height: 1.6;
+        }
+
+        /* How It Works Section */
+        .how-it-works {
+            padding: var(--spacing-20) 0;
+            background: var(--gray-50);
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-8);
+        }
+
+        .step-card {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto var(--spacing-4);
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+        }
+
+        .step-title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .step-description {
+            color: var(--gray-600);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--gray-900);
+            color: var(--white);
+            padding: var(--spacing-16) 0 var(--spacing-8);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-8);
+            margin-bottom: var(--spacing-8);
+        }
+
+        .footer-section h3 {
+            color: var(--white);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: var(--gray-400);
+            text-decoration: none;
+            line-height: 1.6;
+        }
+
+        .footer-section a:hover {
+            color: var(--white);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--gray-700);
+            padding-top: var(--spacing-8);
+            text-align: center;
+            color: var(--gray-400);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: var(--font-size-3xl);
+            }
+
+            .upload-container {
+                margin: 0 var(--spacing-4);
+                padding: var(--spacing-8);
+            }
+
+            .upload-area {
+                padding: var(--spacing-8);
+            }
+
+            .upload-actions {
+                flex-direction: column;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading States */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-normal);
+        }
+
+        .loading-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loading-content {
+            background: var(--white);
+            padding: var(--spacing-8);
+            border-radius: var(--radius-xl);
+            text-align: center;
+            max-width: 400px;
+            margin: 0 var(--spacing-4);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--gray-200);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto var(--spacing-4);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">
+                    <i class="fas fa-brain logo-icon"></i>
+                    Resume AI
+                </a>
+                <div class="nav-links">
+                    <a href="#features" class="nav-link">Features</a>
+                    <a href="#how-it-works" class="nav-link">How It Works</a>
+                    <a href="#about" class="nav-link">About</a>
+                    <a href="/admin/login" class="nav-link">Admin Login</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Intelligent Resume Processing</h1>
+                <p>
+                    Streamline your hiring process with AI-powered resume analysis and candidate ranking. 
+                    Find the perfect match for your job openings faster and more accurately.
+                </p>
+                <a href="#upload" class="btn btn-primary">Get Started</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Upload Section -->
+    <section id="upload" class="upload-section">
+        <div class="container">
+            <div class="upload-container">
+                <div class="upload-header">
+                    <h2 class="upload-title">Upload Your Resume</h2>
+                    <p class="upload-subtitle">Get instant AI-powered analysis and job matching</p>
+                </div>
+
+                <form id="upload-form" enctype="multipart/form-data">
+                    <div class="upload-area" id="upload-area">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <div class="upload-text">Drag and drop your resume here</div>
+                        <div class="upload-hint">or click to browse files (PDF, DOC, DOCX)</div>
+                        <input type="file" id="file-input" name="file" accept=".pdf,.doc,.docx" style="display: none;">
+                    </div>
+
+                    <div class="job-role-selection">
+                        <label for="job-role" class="job-role-label">Select Job Role</label>
+                        <select id="job-role" name="job_role" class="job-role-select" required>
+                            <option value="">Choose a job role...</option>
+                            <option value="Software Engineer">Software Engineer</option>
+                            <option value="Data Scientist">Data Scientist</option>
+                            <option value="Product Manager">Product Manager</option>
+                            <option value="Marketing Manager">Marketing Manager</option>
+                            <option value="Sales Representative">Sales Representative</option>
+                            <option value="HR Manager">HR Manager</option>
+                            <option value="Financial Analyst">Financial Analyst</option>
+                            <option value="Designer">Designer</option>
+                            <option value="Project Manager">Project Manager</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="upload-actions">
+                        <button type="submit" class="btn btn-primary btn-lg" id="analyze-btn" disabled>
+                            <i class="fas fa-brain"></i>
+                            Analyze Resume
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="features-header">
+                <h2 class="features-title">Powerful AI Features</h2>
+                <p class="features-subtitle">
+                    Our advanced AI technology provides comprehensive resume analysis and intelligent job matching
+                </p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon ai">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="feature-title">AI-Powered Analysis</h3>
+                    <p class="feature-description">
+                        Advanced natural language processing to extract key skills, experience, and qualifications from resumes.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon fast">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="feature-title">Lightning Fast</h3>
+                    <p class="feature-description">
+                        Get comprehensive analysis results in seconds, not hours. Process hundreds of resumes quickly.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon accurate">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3 class="feature-title">Accurate Matching</h3>
+                    <p class="feature-description">
+                        Intelligent job matching algorithm that considers skills, experience, and cultural fit for better hiring decisions.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <div class="features-header">
+                <h2 class="features-title">How It Works</h2>
+                <p class="features-subtitle">
+                    Simple three-step process to get comprehensive resume analysis
+                </p>
+            </div>
+
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Upload Resume</h3>
+                    <p class="step-description">
+                        Upload your resume in PDF, DOC, or DOCX format and select the target job role.
+                    </p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">AI Analysis</h3>
+                    <p class="step-description">
+                        Our AI extracts key information and analyzes the resume against job requirements.
+                    </p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Get Results</h3>
+                    <p class="step-description">
+                        Receive detailed analysis with match score, strengths, and improvement recommendations.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="features">
+        <div class="container">
+            <div class="features-header">
+                <h2 class="features-title">About Resume AI</h2>
+                <p class="features-subtitle">
+                    We're revolutionizing the hiring process with cutting-edge AI technology that helps companies find the best talent and helps candidates showcase their potential.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Resume AI</h3>
+                    <p>Intelligent resume processing powered by advanced AI technology. Making hiring smarter and faster.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Features</h3>
+                    <p><a href="#features">AI Analysis</a></p>
+                    <p><a href="#features">Job Matching</a></p>
+                    <p><a href="#features">Quick Processing</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <p><a href="#">Contact Us</a></p>
+                    <p><a href="#">FAQ</a></p>
+                    <p><a href="#">Documentation</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <p><a href="#">Privacy Policy</a></p>
+                    <p><a href="#">Terms of Service</a></p>
+                    <p><a href="#">Cookie Policy</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Resume AI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h3>Analyzing Resume...</h3>
+            <p>Our AI is processing your resume. This will take just a moment.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput = document.getElementById('file-input');
+            const uploadForm = document.getElementById('upload-form');
+            const analyzeBtn = document.getElementById('analyze-btn');
+            const jobRoleSelect = document.getElementById('job-role');
+            const loadingOverlay = document.getElementById('loading-overlay');
+
+            // Upload area click handler
+            uploadArea.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            // Drag and drop handlers
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    handleFileSelect();
+                }
+            });
+
+            // File input change handler
+            fileInput.addEventListener('change', handleFileSelect);
+
+            // Job role change handler
+            jobRoleSelect.addEventListener('change', updateAnalyzeButton);
+
+            function handleFileSelect() {
+                const file = fileInput.files[0];
+                if (file) {
+                    // Update upload area to show selected file
+                    uploadArea.innerHTML = `
+                        <i class="fas fa-file-alt upload-icon" style="color: var(--success-color);"></i>
+                        <div class="upload-text">Selected: ${file.name}</div>
+                        <div class="upload-hint">Click to select a different file</div>
+                    `;
+                    updateAnalyzeButton();
+                }
+            }
+
+            function updateAnalyzeButton() {
+                const hasFile = fileInput.files.length > 0;
+                const hasJobRole = jobRoleSelect.value !== '';
+                
+                analyzeBtn.disabled = !(hasFile && hasJobRole);
+            }
+
+            // Form submission handler
+            uploadForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (!fileInput.files[0] || !jobRoleSelect.value) {
+                    alert('Please select a file and job role');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                formData.append('job_role', jobRoleSelect.value);
+
+                // Show loading overlay
+                loadingOverlay.classList.add('show');
+
+                // Submit to backend
+                fetch('/api/resume/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    loadingOverlay.classList.remove('show');
+                    
+                    if (data.success) {
+                        // Redirect to results page
+                        window.location.href = `/results/${data.resume_id}`;
+                    } else {
+                        alert('Error: ' + (data.error || 'Failed to process resume'));
+                    }
+                })
+                .catch(error => {
+                    loadingOverlay.classList.remove('show');
+                    console.error('Error:', error);
+                    alert('An error occurred while processing your resume. Please try again.');
+                });
+            });
+
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

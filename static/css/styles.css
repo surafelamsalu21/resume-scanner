@@ -1,0 +1,251 @@
+/* Global Styles */
+:root {
+	--primary-color: #0d6efd;
+	--secondary-color: #6c757d;
+	--success-color: #198754;
+	--info-color: #0dcaf0;
+	--warning-color: #ffc107;
+	--danger-color: #dc3545;
+	--light-color: #f8f9fa;
+	--dark-color: #212529;
+	--border-radius: 8px;
+	--box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	--transition-speed: 0.3s;
+}
+
+body {
+	background-color: #f5f7fa;
+	color: var(--dark-color);
+	line-height: 1.6;
+}
+
+/* Navigation Styles */
+.navbar {
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+	font-weight: 600;
+	font-size: 1.5rem;
+}
+
+/* Card Styles */
+.card {
+	border: none;
+	border-radius: var(--border-radius);
+	box-shadow: var(--box-shadow);
+	transition: transform var(--transition-speed),
+		box-shadow var(--transition-speed);
+}
+
+.card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-title {
+	color: var(--dark-color);
+	font-weight: 600;
+}
+
+/* Upload Area Styles */
+.upload-area {
+	border: 2px dashed #dee2e6;
+	border-radius: var(--border-radius);
+	padding: 2.5rem;
+	text-align: center;
+	cursor: pointer;
+	transition: all var(--transition-speed);
+	background-color: var(--light-color);
+}
+
+.upload-area:hover,
+.upload-area.dragover {
+	border-color: var(--primary-color);
+	background-color: rgba(13, 110, 253, 0.05);
+}
+
+.upload-area i {
+	font-size: 2.5rem;
+	color: var(--primary-color);
+	margin-bottom: 1rem;
+}
+
+.upload-area p {
+	margin: 0;
+	color: var(--secondary-color);
+}
+
+.upload-area .file-name {
+	margin-top: 0.5rem;
+	font-weight: 500;
+	color: var(--primary-color);
+}
+
+/* Form Controls */
+.form-label {
+	font-weight: 500;
+	color: var(--dark-color);
+}
+
+.form-select {
+	border-radius: var(--border-radius);
+	border: 1px solid #dee2e6;
+	padding: 0.75rem;
+	transition: border-color var(--transition-speed),
+		box-shadow var(--transition-speed);
+}
+
+.form-select:focus {
+	border-color: var(--primary-color);
+	box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Button Styles */
+.btn {
+	padding: 0.75rem 1.5rem;
+	font-weight: 500;
+	border-radius: var(--border-radius);
+	transition: all var(--transition-speed);
+}
+
+.btn-primary {
+	background-color: var(--primary-color);
+	border: none;
+	box-shadow: 0 2px 4px rgba(13, 110, 253, 0.2);
+}
+
+.btn-primary:hover {
+	background-color: #0b5ed7;
+	transform: translateY(-1px);
+	box-shadow: 0 4px 6px rgba(13, 110, 253, 0.3);
+}
+
+.btn:disabled {
+	opacity: 0.7;
+	cursor: not-allowed;
+}
+
+/* Results Section Styles */
+.result-card {
+	margin-bottom: 1.5rem;
+}
+
+.score-badge {
+	font-size: 1.25rem;
+	padding: 0.5rem 1rem;
+	border-radius: var(--border-radius);
+	background-color: var(--primary-color);
+}
+
+.progress {
+	height: 1rem;
+	border-radius: var(--border-radius);
+	background-color: #e9ecef;
+	margin: 1rem 0;
+}
+
+.progress-bar {
+	background-color: var(--primary-color);
+	transition: width 1s ease-in-out;
+}
+
+/* Details Section */
+.details-section {
+	margin-top: 1rem;
+	font-size: 0.95rem;
+}
+
+.details-section strong {
+	color: var(--dark-color);
+}
+
+/* Recommendations List */
+.list-group-item {
+	border-left: none;
+	border-right: none;
+	padding: 1rem;
+	transition: background-color var(--transition-speed);
+}
+
+.list-group-item:first-child {
+	border-top: none;
+}
+
+.list-group-item:last-child {
+	border-bottom: none;
+}
+
+.list-group-item:hover {
+	background-color: var(--light-color);
+}
+
+/* Loading Spinner */
+.loading-spinner {
+	margin-right: 0.5rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+	.container {
+		padding: 1rem;
+	}
+
+	.upload-area {
+		padding: 1.5rem;
+	}
+
+	.card-body {
+		padding: 1.25rem;
+	}
+
+	.score-badge {
+		font-size: 1rem;
+		padding: 0.4rem 0.8rem;
+	}
+
+	.btn {
+		padding: 0.6rem 1.2rem;
+	}
+}
+
+/* Animations */
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.result-card {
+	animation: fadeIn 0.5s ease-out;
+}
+
+/* Accessibility */
+.btn:focus,
+.form-select:focus {
+	outline: none;
+	box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Print Styles */
+@media print {
+	.upload-area,
+	.btn,
+	.navbar {
+		display: none;
+	}
+
+	.card {
+		box-shadow: none;
+		border: 1px solid #dee2e6;
+	}
+
+	body {
+		background-color: white;
+	}
+}

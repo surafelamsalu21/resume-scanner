@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
+		<title>Resume Analysis Results - Resume AI</title>
+		<link
+			rel="stylesheet"
+			href="{{ url_for('static', filename='css/style.css') }}"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+		/>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+		<style>
+			.results-container {
+				max-width: 800px;
+				margin: 50px auto;
+				padding: 30px;
+				background-color: var(--card-bg);
+				border-radius: var(--border-radius);
+				box-shadow: var(--box-shadow);
+			}
+
+			.score-card {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				padding: 20px;
+				background-color: var(--light-color);
+				border-radius: var(--border-radius);
+				margin-bottom: 30px;
+			}
+
+			.score-value {
+				font-size: 48px;
+				font-weight: 700;
+				color: var(--primary-color);
+			}
+
+			.score-label {
+				font-size: 18px;
+				color: var(--secondary-color);
+			}
+
+			.section {
+				margin-bottom: 30px;
+			}
+
+			.section-title {
+				font-size: 24px;
+				margin-bottom: 15px;
+				color: var(--dark-color);
+				border-bottom: 2px solid var(--light-color);
+				padding-bottom: 10px;
+			}
+
+			.info-item {
+				margin-bottom: 15px;
+			}
+
+			.info-label {
+				font-weight: 600;
+				margin-bottom: 5px;
+			}
+
+			.info-value {
+				color: var(--secondary-color);
+			}
+
+			.skill-bar {
+				height: 10px;
+				background-color: #e9ecef;
+				border-radius: 5px;
+				margin-top: 5px;
+				overflow: hidden;
+			}
+
+			.skill-progress {
+				height: 100%;
+				background-color: var(--primary-color);
+			}
+
+			.skill-match {
+				font-size: 14px;
+				color: var(--primary-color);
+				margin-top: 5px;
+				text-align: right;
+			}
+
+			.experience-item,
+			.education-item {
+				padding: 15px;
+				background-color: var(--light-color);
+				border-radius: var(--border-radius);
+				margin-bottom: 15px;
+			}
+
+			.experience-title,
+			.education-degree {
+				font-weight: 600;
+				margin-bottom: 5px;
+			}
+
+			.experience-company,
+			.education-institution {
+				color: var(--secondary-color);
+				margin-bottom: 5px;
+			}
+
+			.experience-duration,
+			.education-field {
+				font-size: 14px;
+				color: var(--secondary-color);
+			}
+
+			.relevance-badge {
+				display: inline-block;
+				padding: 3px 8px;
+				background-color: var(--primary-color);
+				color: white;
+				border-radius: 12px;
+				font-size: 12px;
+				margin-left: 10px;
+			}
+
+			.summary {
+				padding: 20px;
+				background-color: var(--light-color);
+				border-radius: var(--border-radius);
+				margin-bottom: 30px;
+				font-style: italic;
+				color: var(--secondary-color);
+			}
+
+			.actions {
+				display: flex;
+				justify-content: space-between;
+				margin-top: 30px;
+			}
+
+			.btn-secondary {
+				background-color: var(--secondary-color);
+			}
+
+			.btn-secondary:hover {
+				background-color: #5a6268;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<div class="container">
+				<nav class="navbar">
+					<a href="/" class="logo">Resume AI</a>
+					<div class="nav-links">
+						<a href="/#features">Features</a>
+						<a href="/#how-it-works">How It Works</a>
+						<a href="/#about">About</a>
+						<a href="/admin/login">Admin Login</a>
+					</div>
+				</nav>
+			</div>
+		</header>
+
+		<div class="container">
+			<div class="results-container">
+				<h2>Resume Analysis Results</h2>
+				<p>Job Role: <strong>{{ job_role }}</strong></p>
+
+				<div class="score-card">
+					<div>
+						<div class="score-label">Overall Match Score</div>
+						<div class="score-value">
+							{{ "%.1f"|format(ranking_score) }}
+						</div>
+					</div>
+					<div>
+						<i
+							class="fas fa-chart-line fa-3x"
+							style="color: var(--primary-color)"
+						></i>
+					</div>
+				</div>
+
+				{% if processed_data.summary %}
+				<div class="summary">
+					<i
+						class="fas fa-quote-left"
+						style="margin-right: 10px; opacity: 0.5"
+					></i>
+					{{ processed_data.summary }}
+					<i
+						class="fas fa-quote-right"
+						style="margin-left: 10px; opacity: 0.5"
+					></i>
+				</div>
+				{% endif %}
+
+				<!-- Candidate Information -->
+				<div class="candidate-info">
+					<h3>Candidate Information</h3>
+					<div class="info-grid">
+						<div class="info-item">
+							<strong>Name</strong>
+							<p>
+								{{
+								processed_data.candidate_name|default('Not
+								available', true) }}
+							</p>
+						</div>
+						<div class="info-item">
+							<strong>Email</strong>
+							<p>
+								{{
+								processed_data.contact_info.email|default('Not
+								available', true) }}
+							</p>
+						</div>
+						<div class="info-item">
+							<strong>Phone</strong>
+							<p>
+								{{
+								processed_data.contact_info.phone|default('Not
+								available', true) }}
+							</p>
+						</div>
+						<div class="info-item">
+							<strong>Location</strong>
+							<p>
+								{{
+								processed_data.contact_info.location|default('Not
+								available', true) }}
+							</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Skills Analysis -->
+				<div class="skills-analysis">
+					<h3>Skills Analysis</h3>
+					{% if processed_data.skills_match and
+					processed_data.skills_match|length > 0 %}
+					<div class="skills-grid">
+						{% for skill in processed_data.skills_match %}
+						<div class="skill-item">
+							<div class="skill-header">
+								<span class="skill-name"
+									>{{ skill.skill }}</span
+								>
+								<span class="skill-level"
+									>{{ skill.level }}</span
+								>
+							</div>
+							<div class="skill-bar">
+								<div
+									class="skill-progress"
+									style="width: {{ skill.match_percentage }}%"
+								></div>
+							</div>
+							<div class="skill-percentage">
+								{{ skill.match_percentage }}%
+							</div>
+						</div>
+						{% endfor %}
+					</div>
+					{% elif processed_data.skills and
+					processed_data.skills|length > 0 %}
+					<div class="skills-list">
+						{% for skill in processed_data.skills %}
+						<div class="skill-tag">
+							{{ skill.name }} {% if skill.level %}({{
+							skill.level }}){% endif %}
+						</div>
+						{% endfor %}
+					</div>
+					{% else %}
+					<p>No skills analysis available</p>
+					{% endif %}
+				</div>
+
+				<!-- Experience -->
+				<div class="experience-section">
+					<h3>Experience</h3>
+					{% if processed_data.experience and
+					processed_data.experience|length > 0 %}
+					<div class="experience-timeline">
+						{% for exp in processed_data.experience %}
+						<div class="experience-item">
+							<div class="experience-header">
+								<h4>{{ exp.title }}</h4>
+								<span class="company"
+									>{{ exp.company }}</span
+								>
+								<span class="duration"
+									>{{ exp.duration }}</span
+								>
+							</div>
+							<p class="description">
+								{{ exp.description }}
+							</p>
+						</div>
+						{% endfor %}
+					</div>
+					{% if processed_data.experience_relevance %}
+					<div class="relevance-score">
+						<span
+							>Experience Relevance: {{
+							processed_data.experience_relevance }}%</span
+						>
+					</div>
+					{% endif %} {% else %}
+					<p>No experience information available</p>
+					{% endif %}
+				</div>
+
+				<!-- Education -->
+				<div class="education-section">
+					<h3>Education</h3>
+					{% if processed_data.education and
+					processed_data.education|length > 0 %}
+					<div class="education-list">
+						{% for edu in processed_data.education %}
+						<div class="education-item">
+							<h4>{{ edu.degree }}</h4>
+							<p>{{ edu.institution }}</p>
+							<p>{{ edu.field }}</p>
+							<p>{{ edu.year }}</p>
+						</div>
+						{% endfor %}
+					</div>
+					{% if processed_data.education_relevance %}
+					<div class="relevance-score">
+						<span
+							>Education Relevance: {{
+							processed_data.education_relevance }}%</span
+						>
+					</div>
+					{% endif %} {% else %}
+					<p>No education information available</p>
+					{% endif %}
+				</div>
+
+				<!-- Recommendations -->
+				<div class="recommendations-section">
+					<h3>Recommendations</h3>
+					{% if processed_data.recommendations and
+					processed_data.recommendations|length > 0 %}
+					<ul class="recommendations-list">
+						{% for rec in processed_data.recommendations %}
+						<li>{{ rec }}</li>
+						{% endfor %}
+					</ul>
+					{% else %}
+					<p>No recommendations available</p>
+					{% endif %}
+				</div>
+
+				<!-- Add strengths and weaknesses sections -->
+				<div class="strengths-weaknesses">
+					<div class="strengths">
+						<h3>Strengths</h3>
+						{% if processed_data.strengths and
+						processed_data.strengths|length > 0 %}
+						<ul>
+							{% for strength in processed_data.strengths
+							%}
+							<li>{{ strength }}</li>
+							{% endfor %}
+						</ul>
+						{% else %}
+						<p>No strengths identified</p>
+						{% endif %}
+					</div>
+
+					<div class="weaknesses">
+						<h3>Areas for Improvement</h3>
+						{% if processed_data.weaknesses and
+						processed_data.weaknesses|length > 0 %}
+						<ul>
+							{% for weakness in processed_data.weaknesses
+							%}
+							<li>{{ weakness }}</li>
+							{% endfor %}
+						</ul>
+						{% else %}
+						<p>No areas for improvement identified</p>
+						{% endif %}
+					</div>
+				</div>
+
+				<div class="actions">
+					<a href="/api/resume/upload" class="btn btn-secondary">
+						<i class="fas fa-upload"></i> Upload Another
+						Resume
+					</a>
+					<a href="/" class="btn">
+						<i class="fas fa-home"></i> Back to Home
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<footer>
+			<div class="container">
+				<div class="footer-content">
+					<a href="/" class="logo">Resume AI</a>
+					<div class="footer-links">
+						<a href="/#features">Features</a>
+						<a href="/#how-it-works">How It Works</a>
+						<a href="/#about">About</a>
+						<a href="/privacy">Privacy Policy</a>
+						<a href="/terms">Terms of Service</a>
+					</div>
+					<p class="copyright">
+						&copy; 2025 Resume AI. All rights reserved.
+					</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

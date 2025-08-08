@@ -1,0 +1,84 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+*.html
+*.pdf
+README.md
+DEPLOYMENT.md
+docs/
+
+# Test files
+test_*
+tests/
+*_test.py
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+*.tmp
+*.bak
+temp/
+backup_*/
+
+# Cache databases
+cache/
+
+# Environment examples
+env.example
+env.dev
+
+# Instance directory
+instance/
+
+# Uploads directory
+uploads/
+
+# Shell scripts
+*.sh
+deploy.sh

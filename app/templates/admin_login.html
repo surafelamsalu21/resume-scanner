@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Resume AI</title>
+    
+    <!-- Professional CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/professional.css') }}">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        .login-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-6);
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            background: var(--white);
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-2xl);
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: var(--white);
+            text-align: center;
+            padding: var(--spacing-8);
+        }
+
+        .login-logo {
+            font-size: var(--font-size-3xl);
+            margin-bottom: var(--spacing-2);
+        }
+
+        .login-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 600;
+            margin-bottom: var(--spacing-2);
+        }
+
+        .login-subtitle {
+            font-size: var(--font-size-sm);
+            opacity: 0.9;
+        }
+
+        .login-form {
+            padding: var(--spacing-8);
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: var(--spacing-6);
+        }
+
+        .form-input {
+            padding-left: var(--spacing-12);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: var(--spacing-4);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+            z-index: 1;
+        }
+
+        .form-input:focus + .input-icon {
+            color: var(--primary-color);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: var(--spacing-4);
+            font-size: var(--font-size-base);
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            border: none;
+            border-radius: var(--radius-lg);
+            color: var(--white);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .login-btn:hover::before {
+            left: 100%;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: var(--spacing-6);
+        }
+
+        .forgot-password a {
+            color: var(--primary-color);
+            font-size: var(--font-size-sm);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            margin-bottom: var(--spacing-6);
+            border-radius: var(--radius-lg);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .security-badge {
+            background: var(--gray-50);
+            border-top: 1px solid var(--gray-200);
+            padding: var(--spacing-4);
+            text-align: center;
+            font-size: var(--font-size-xs);
+            color: var(--gray-500);
+        }
+
+        .security-badge i {
+            color: var(--success-color);
+            margin-right: var(--spacing-1);
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid var(--white);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: var(--spacing-2);
+        }
+
+        .login-btn.loading .loading-spinner {
+            display: inline-block;
+        }
+
+        .login-btn.loading .btn-text {
+            opacity: 0.7;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Floating particles background effect */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .login-page {
+                padding: var(--spacing-4);
+            }
+            
+            .login-header {
+                padding: var(--spacing-6);
+            }
+            
+            .login-form {
+                padding: var(--spacing-6);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-page">
+        <!-- Animated background particles -->
+        <div class="particles">
+            <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+            <div class="particle" style="left: 20%; animation-delay: 1s;"></div>
+            <div class="particle" style="left: 30%; animation-delay: 2s;"></div>
+            <div class="particle" style="left: 40%; animation-delay: 3s;"></div>
+            <div class="particle" style="left: 50%; animation-delay: 4s;"></div>
+            <div class="particle" style="left: 60%; animation-delay: 5s;"></div>
+            <div class="particle" style="left: 70%; animation-delay: 0.5s;"></div>
+            <div class="particle" style="left: 80%; animation-delay: 1.5s;"></div>
+            <div class="particle" style="left: 90%; animation-delay: 2.5s;"></div>
+        </div>
+
+        <div class="login-container">
+            <div class="login-header">
+                <div class="login-logo">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h1 class="login-title">Resume AI</h1>
+                <p class="login-subtitle">Admin Portal Access</p>
+            </div>
+
+            <div class="login-form">
+                {% if error %}
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    {{ error }}
+                </div>
+                {% endif %}
+
+                <div id="alert-container" class="hidden"></div>
+
+                <form id="login-form" action="/admin/login" method="POST" novalidate>
+                    {{ form.csrf_token }}
+                    
+                    <div class="form-group">
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            class="form-input" 
+                            placeholder="Enter your email address"
+                            required
+                            autocomplete="email"
+                        >
+                        <i class="fas fa-envelope input-icon"></i>
+                    </div>
+
+                    <div class="form-group">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            class="form-input" 
+                            placeholder="Enter your password"
+                            required
+                            autocomplete="current-password"
+                        >
+                        <i class="fas fa-lock input-icon"></i>
+                    </div>
+
+                    <button type="submit" class="login-btn" id="login-button">
+                        <div class="loading-spinner"></div>
+                        <span class="btn-text">Sign In to Dashboard</span>
+                    </button>
+                </form>
+
+                <div class="forgot-password">
+                    <a href="#" onclick="showForgotPassword()">Forgot your password?</a>
+                </div>
+            </div>
+
+            <div class="security-badge">
+                <i class="fas fa-shield-alt"></i>
+                Secured with 256-bit SSL encryption
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('login-form');
+            const loginButton = document.getElementById('login-button');
+            const alertContainer = document.getElementById('alert-container');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+
+            // Form validation
+            function validateForm() {
+                const email = emailInput.value.trim();
+                const password = passwordInput.value.trim();
+                
+                clearAlert();
+                
+                if (!email) {
+                    showAlert('Please enter your email address', 'danger');
+                    emailInput.focus();
+                    return false;
+                }
+                
+                if (!isValidEmail(email)) {
+                    showAlert('Please enter a valid email address', 'danger');
+                    emailInput.focus();
+                    return false;
+                }
+                
+                if (!password) {
+                    showAlert('Please enter your password', 'danger');
+                    passwordInput.focus();
+                    return false;
+                }
+                
+                return true;
+            }
+
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            function showAlert(message, type = 'info') {
+                alertContainer.innerHTML = `
+                    <div class="alert alert-${type}">
+                        <i class="fas fa-${getAlertIcon(type)}"></i>
+                        ${message}
+                    </div>
+                `;
+                alertContainer.classList.remove('hidden');
+            }
+
+            function clearAlert() {
+                alertContainer.innerHTML = '';
+                alertContainer.classList.add('hidden');
+            }
+
+            function getAlertIcon(type) {
+                const icons = {
+                    success: 'check-circle',
+                    danger: 'exclamation-triangle',
+                    warning: 'exclamation-circle',
+                    info: 'info-circle'
+                };
+                return icons[type] || 'info-circle';
+            }
+
+            function setLoading(loading) {
+                if (loading) {
+                    loginButton.classList.add('loading');
+                    loginButton.disabled = true;
+                } else {
+                    loginButton.classList.remove('loading');
+                    loginButton.disabled = false;
+                }
+            }
+
+            // Form submission handler - use normal form submission for better compatibility
+            loginForm.addEventListener('submit', function(e) {
+                if (!validateForm()) {
+                    e.preventDefault();
+                    return false;
+                }
+
+                setLoading(true);
+                clearAlert();
+                showAlert('Signing in...', 'info');
+                
+                // Let the form submit naturally to the backend
+                return true;
+            });
+
+            // Input field enhancements
+            [emailInput, passwordInput].forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentNode.querySelector('.input-icon').style.color = 'var(--primary-color)';
+                });
+                
+                input.addEventListener('blur', function() {
+                    if (!this.value) {
+                        this.parentNode.querySelector('.input-icon').style.color = 'var(--gray-400)';
+                    }
+                });
+
+                // Clear alerts when user starts typing
+                input.addEventListener('input', function() {
+                    clearAlert();
+                });
+            });
+
+            // Enter key navigation
+            emailInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    passwordInput.focus();
+                }
+            });
+
+            // Auto-focus email field
+            emailInput.focus();
+        });
+
+        function showForgotPassword() {
+            alert('Please contact your system administrator to reset your password.');
+        }
+
+        // Add more floating particles dynamically
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 6 + 's';
+            particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            
+            document.querySelector('.particles').appendChild(particle);
+            
+            // Remove particle after animation
+            setTimeout(() => {
+                particle.remove();
+            }, 6000);
+        }
+
+        // Create particles periodically
+        setInterval(createParticle, 1000);
+    </script>
+</body>
+</html>

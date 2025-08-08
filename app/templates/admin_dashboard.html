@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
+		<title>Admin Dashboard - Resume AI</title>
+		<!-- Professional CSS -->
+		<link
+			rel="stylesheet"
+			href="{{ url_for('static', filename='css/professional.css') }}"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+		/>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+		<style>
+			/* Modern Professional Admin Dashboard */
+			body {
+				font-family: "Inter", sans-serif;
+				margin: 0;
+				padding: 0;
+				background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+				color: #1a202c;
+				line-height: 1.6;
+				min-height: 100vh;
+			}
+
+			/* Header Styles */
+			.admin-header {
+				background: rgba(255, 255, 255, 0.95);
+				backdrop-filter: blur(10px);
+				border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+				padding: 0;
+				position: sticky;
+				top: 0;
+				z-index: 100;
+				box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+			}
+
+			.admin-nav {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 1rem 2rem;
+				max-width: none;
+			}
+
+			.admin-logo {
+				display: flex;
+				align-items: center;
+				gap: 0.75rem;
+				font-size: 1.5rem;
+				font-weight: 700;
+				color: var(--primary-color);
+				text-decoration: none;
+			}
+
+			.admin-logo i {
+				background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+			}
+
+			.admin-nav-links {
+				display: flex;
+				gap: 2rem;
+				align-items: center;
+			}
+
+			.admin-nav-link {
+				color: #64748b;
+				text-decoration: none;
+				font-weight: 500;
+				font-size: 0.95rem;
+				padding: 0.5rem 1rem;
+				border-radius: var(--radius-lg);
+				transition: all var(--transition-normal);
+				position: relative;
+			}
+
+			.admin-nav-link:hover {
+				color: var(--primary-color);
+				background: rgba(13, 110, 253, 0.1);
+			}
+
+			.admin-nav-link.active {
+				color: var(--primary-color);
+				background: rgba(13, 110, 253, 0.1);
+			}
+
+			.logout-btn {
+				background: linear-gradient(135deg, #ef4444, #dc2626);
+				color: white;
+				border: none;
+				padding: 0.5rem 1rem;
+				border-radius: var(--radius-lg);
+				font-weight: 500;
+				cursor: pointer;
+				transition: all var(--transition-normal);
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+			}
+
+			.logout-btn:hover {
+				transform: translateY(-1px);
+				box-shadow: var(--shadow-lg);
+			}
+
+			/* Dashboard Layout */
+			.dashboard-container {
+				display: flex;
+				min-height: calc(100vh - 80px);
+			}
+
+			/* Sidebar */
+			.admin-sidebar {
+				width: 280px;
+				background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+				color: white;
+				padding: 2rem 0;
+				box-shadow: var(--shadow-xl);
+				position: relative;
+			}
+
+			.admin-sidebar::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><defs><pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse"><path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+				opacity: 0.3;
+			}
+
+			.sidebar-content {
+				position: relative;
+				z-index: 2;
+			}
+
+			.sidebar-header {
+				padding: 0 2rem 2rem;
+				border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+				margin-bottom: 2rem;
+			}
+
+			.sidebar-title {
+				font-size: 1.25rem;
+				font-weight: 600;
+				color: #f1f5f9;
+				margin: 0;
+				display: flex;
+				align-items: center;
+				gap: 0.75rem;
+			}
+
+			.sidebar-menu {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+			}
+
+			.sidebar-menu-item {
+				margin-bottom: 0.5rem;
+			}
+
+			.sidebar-menu-link {
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+				padding: 1rem 2rem;
+				color: rgba(241, 245, 249, 0.8);
+				text-decoration: none;
+				transition: all var(--transition-normal);
+				border-left: 3px solid transparent;
+				font-weight: 500;
+			}
+
+			.sidebar-menu-link:hover,
+			.sidebar-menu-link.active {
+				background: rgba(255, 255, 255, 0.1);
+				color: #f1f5f9;
+				border-left-color: var(--accent-color);
+				backdrop-filter: blur(10px);
+			}
+
+			.sidebar-menu-icon {
+				width: 20px;
+				text-align: center;
+				font-size: 1.1rem;
+			}
+
+			/* Main Content */
+			.main-content {
+				flex: 1;
+				padding: 2rem;
+				background: transparent;
+			}
+
+			.dashboard-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 2rem;
+				background: white;
+				padding: 1.5rem 2rem;
+				border-radius: var(--radius-2xl);
+				box-shadow: var(--shadow-lg);
+				border: 1px solid rgba(255, 255, 255, 0.2);
+			}
+
+			.dashboard-title {
+				font-size: 2rem;
+				font-weight: 700;
+				color: #1a202c;
+				margin: 0;
+				background: linear-gradient(135deg, #1a202c, #4a5568);
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+			}
+
+			.user-info {
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+				background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+				padding: 0.75rem 1.5rem;
+				border-radius: var(--radius-xl);
+				border: 1px solid rgba(0, 0, 0, 0.05);
+			}
+
+			.user-avatar {
+				width: 40px;
+				height: 40px;
+				background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+				border-radius: 50%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: white;
+				font-weight: 600;
+			}
+
+			.user-details h4 {
+				margin: 0;
+				font-size: 0.9rem;
+				font-weight: 600;
+				color: #1a202c;
+			}
+
+			.user-details p {
+				margin: 0;
+				font-size: 0.8rem;
+				color: #64748b;
+			}
+
+			/* Stats Grid */
+			.stats-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+				gap: 1.5rem;
+				margin-bottom: 2rem;
+			}
+
+			.stat-card {
+				background: white;
+				border-radius: var(--radius-2xl);
+				padding: 2rem;
+				box-shadow: var(--shadow-lg);
+				border: 1px solid rgba(255, 255, 255, 0.2);
+				position: relative;
+				overflow: hidden;
+				transition: all var(--transition-normal);
+			}
+
+			.stat-card:hover {
+				transform: translateY(-2px);
+				box-shadow: var(--shadow-xl);
+			}
+
+			.stat-card::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				height: 4px;
+				background: var(--gradient);
+			}
+
+			.stat-card.primary::before {
+				background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+			}
+
+			.stat-card.success::before {
+				background: linear-gradient(90deg, #10b981, #059669);
+			}
+
+			.stat-card.warning::before {
+				background: linear-gradient(90deg, #f59e0b, #d97706);
+			}
+
+			.stat-card.info::before {
+				background: linear-gradient(90deg, #06b6d4, #0891b2);
+			}
+
+			.stat-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 1rem;
+			}
+
+			.stat-icon {
+				width: 60px;
+				height: 60px;
+				border-radius: var(--radius-xl);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 1.5rem;
+				color: white;
+			}
+
+			.stat-card.primary .stat-icon {
+				background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+			}
+
+			.stat-card.success .stat-icon {
+				background: linear-gradient(135deg, #10b981, #059669);
+			}
+
+			.stat-card.warning .stat-icon {
+				background: linear-gradient(135deg, #f59e0b, #d97706);
+			}
+
+			.stat-card.info .stat-icon {
+				background: linear-gradient(135deg, #06b6d4, #0891b2);
+			}
+
+			.stat-value {
+				font-size: 2.5rem;
+				font-weight: 700;
+				color: #1a202c;
+				margin-bottom: 0.5rem;
+			}
+
+			.stat-label {
+				color: #64748b;
+				font-weight: 500;
+				font-size: 1rem;
+			}
+
+			.stat-change {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+				margin-top: 1rem;
+				font-size: 0.875rem;
+			}
+
+			.stat-change.positive {
+				color: #059669;
+			}
+
+			.stat-change.negative {
+				color: #dc2626;
+			}
+
+			/* Content Cards */
+			.content-card {
+				background: white;
+				border-radius: var(--radius-2xl);
+				padding: 2rem;
+				box-shadow: var(--shadow-lg);
+				border: 1px solid rgba(255, 255, 255, 0.2);
+				margin-bottom: 2rem;
+			}
+
+			.card-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 2rem;
+				padding-bottom: 1rem;
+				border-bottom: 1px solid #e2e8f0;
+			}
+
+			.card-title {
+				font-size: 1.5rem;
+				font-weight: 600;
+				color: #1a202c;
+				margin: 0;
+			}
+
+			.card-actions {
+				display: flex;
+				gap: 1rem;
+			}
+
+			.card-action-btn {
+				background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+				color: white;
+				border: none;
+				padding: 0.5rem 1rem;
+				border-radius: var(--radius-lg);
+				font-weight: 500;
+				cursor: pointer;
+				text-decoration: none;
+				font-size: 0.875rem;
+				transition: all var(--transition-normal);
+			}
+
+			.card-action-btn:hover {
+				transform: translateY(-1px);
+				box-shadow: var(--shadow-lg);
+			}
+
+			/* Table Styles */
+			.modern-table {
+				width: 100%;
+				border-collapse: collapse;
+				margin-top: 1rem;
+			}
+
+			.modern-table th {
+				background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+				color: #374151;
+				font-weight: 600;
+				padding: 1rem 1.5rem;
+				text-align: left;
+				border-bottom: 2px solid #e2e8f0;
+				font-size: 0.875rem;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
+			}
+
+			.modern-table td {
+				padding: 1rem 1.5rem;
+				border-bottom: 1px solid #f1f5f9;
+				color: #374151;
+			}
+
+			.modern-table tbody tr {
+				transition: all var(--transition-normal);
+			}
+
+			.modern-table tbody tr:hover {
+				background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+				transform: translateX(4px);
+			}
+
+			/* Quick Links */
+			.quick-links-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+				gap: 1.5rem;
+			}
+
+			.quick-link-card {
+				background: white;
+				border-radius: var(--radius-xl);
+				padding: 2rem;
+				text-align: center;
+				text-decoration: none;
+				color: #374151;
+				box-shadow: var(--shadow-md);
+				border: 1px solid rgba(255, 255, 255, 0.2);
+				transition: all var(--transition-normal);
+				position: relative;
+				overflow: hidden;
+			}
+
+			.quick-link-card::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				height: 4px;
+				background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+				opacity: 0;
+				transition: opacity var(--transition-normal);
+			}
+
+			.quick-link-card:hover {
+				transform: translateY(-4px);
+				box-shadow: var(--shadow-xl);
+				color: #374151;
+				text-decoration: none;
+			}
+
+			.quick-link-card:hover::before {
+				opacity: 1;
+			}
+
+			.quick-link-icon {
+				width: 80px;
+				height: 80px;
+				border-radius: var(--radius-xl);
+				background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				margin: 0 auto 1.5rem;
+				font-size: 2rem;
+				color: white;
+			}
+
+			.quick-link-title {
+				font-weight: 600;
+				font-size: 1.1rem;
+				color: #1a202c;
+				margin-bottom: 0.5rem;
+			}
+
+			.quick-link-description {
+				color: #64748b;
+				font-size: 0.875rem;
+			}
+
+			/* Status Badges */
+			.status-badge {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.5rem;
+				padding: 0.5rem 1rem;
+				border-radius: var(--radius-lg);
+				font-size: 0.875rem;
+				font-weight: 500;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
+			}
+
+			.status-badge.active {
+				background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+				color: #166534;
+			}
+
+			.status-badge.inactive {
+				background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+				color: #64748b;
+			}
+
+			.status-badge.pending {
+				background: linear-gradient(135deg, #fef3c7, #fde68a);
+				color: #92400e;
+			}
+
+			/* Footer */
+			.admin-footer {
+				background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+				color: #f1f5f9;
+				padding: 2rem 0;
+				text-align: center;
+				margin-top: 2rem;
+			}
+
+			.admin-footer p {
+				margin: 0;
+				opacity: 0.8;
+			}
+
+			/* Responsive Design */
+			@media (max-width: 1024px) {
+				.dashboard-container {
+					flex-direction: column;
+				}
+
+				.admin-sidebar {
+					width: 100%;
+					padding: 1rem 0;
+				}
+
+				.sidebar-menu {
+					display: flex;
+					overflow-x: auto;
+					padding: 0 1rem;
+				}
+
+				.sidebar-menu-item {
+					margin-bottom: 0;
+					margin-right: 0.5rem;
+					white-space: nowrap;
+				}
+
+				.main-content {
+					padding: 1rem;
+				}
+
+				.stats-grid {
+					grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+				}
+			}
+
+			@media (max-width: 768px) {
+				.admin-nav {
+					padding: 1rem;
+					flex-direction: column;
+					gap: 1rem;
+				}
+
+				.admin-nav-links {
+					flex-wrap: wrap;
+					justify-content: center;
+				}
+
+				.dashboard-header {
+					flex-direction: column;
+					gap: 1rem;
+				}
+
+				.stats-grid {
+					grid-template-columns: 1fr;
+				}
+
+				.quick-links-grid {
+					grid-template-columns: 1fr;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<!-- Modern Admin Header -->
+		<header class="admin-header">
+			<nav class="admin-nav">
+				<a href="/" class="admin-logo">
+					<i class="fas fa-brain"></i>
+					Resume AI
+				</a>
+				<div class="admin-nav-links">
+					<a href="{{ url_for('admin.dashboard') }}" class="admin-nav-link active">
+						<i class="fas fa-tachometer-alt"></i>
+						Dashboard
+					</a>
+					<a href="{{ url_for('admin.resume_dashboard') }}" class="admin-nav-link">
+						<i class="fas fa-file-alt"></i>
+						Resumes
+					</a>
+					<a href="{{ url_for('admin.job_categories_page') }}" class="admin-nav-link">
+						<i class="fas fa-briefcase"></i>
+						Categories
+					</a>
+					<a href="{{ url_for('admin.prompts_management_page') }}" class="admin-nav-link">
+						<i class="fas fa-comment-dots"></i>
+						AI Prompts
+					</a>
+					<button id="logout-btn" class="logout-btn">
+						<i class="fas fa-sign-out-alt"></i>
+						Logout
+					</button>
+				</div>
+			</nav>
+		</header>
+
+		<div class="dashboard-container">
+			<!-- Modern Sidebar -->
+			<aside class="admin-sidebar">
+				<div class="sidebar-content">
+					<div class="sidebar-header">
+						<h3 class="sidebar-title">
+							<i class="fas fa-shield-alt"></i>
+							Admin Control
+						</h3>
+					</div>
+					<ul class="sidebar-menu">
+						<li class="sidebar-menu-item">
+							<a href="{{ url_for('admin.dashboard') }}" class="sidebar-menu-link active">
+								<i class="fas fa-chart-pie sidebar-menu-icon"></i>
+								Dashboard Overview
+							</a>
+						</li>
+						<li class="sidebar-menu-item">
+							<a href="{{ url_for('admin.resume_dashboard') }}" class="sidebar-menu-link">
+								<i class="fas fa-file-alt sidebar-menu-icon"></i>
+								Resume Management
+							</a>
+						</li>
+						<li class="sidebar-menu-item">
+							<a href="{{ url_for('admin.job_categories_page') }}" class="sidebar-menu-link">
+								<i class="fas fa-briefcase sidebar-menu-icon"></i>
+								Job Categories
+							</a>
+						</li>
+						<li class="sidebar-menu-item">
+							<a href="{{ url_for('admin.prompts_management_page') }}" class="sidebar-menu-link">
+								<i class="fas fa-comment-dots sidebar-menu-icon"></i>
+								AI Prompts
+							</a>
+						</li>
+						<li class="sidebar-menu-item">
+							<a href="#" class="sidebar-menu-link">
+								<i class="fas fa-chart-line sidebar-menu-icon"></i>
+								Analytics
+							</a>
+						</li>
+						<li class="sidebar-menu-item">
+							<a href="#" class="sidebar-menu-link">
+								<i class="fas fa-cog sidebar-menu-icon"></i>
+								Settings
+							</a>
+						</li>
+					</ul>
+				</div>
+			</aside>
+
+			<!-- Main Content Area -->
+			<main class="main-content">
+				<!-- Dashboard Header -->
+				<div class="dashboard-header">
+					<h1 class="dashboard-title">Dashboard Overview</h1>
+					<div class="user-info">
+						<div class="user-avatar">A</div>
+						<div class="user-details">
+							<h4>Administrator</h4>
+							<p>System Admin</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Stats Grid -->
+				<div class="stats-grid">
+					<div class="stat-card primary">
+						<div class="stat-header">
+							<div>
+								<div class="stat-value">{{ stats.resumes or 0 }}</div>
+								<div class="stat-label">Total Resumes</div>
+							</div>
+							<div class="stat-icon">
+								<i class="fas fa-file-alt"></i>
+							</div>
+						</div>
+						<div class="stat-change positive">
+							<i class="fas fa-arrow-up"></i>
+							<span>+12% from last month</span>
+						</div>
+					</div>
+
+					<div class="stat-card success">
+						<div class="stat-header">
+							<div>
+								<div class="stat-value">{{ stats.categories or 0 }}</div>
+								<div class="stat-label">Job Categories</div>
+							</div>
+							<div class="stat-icon">
+								<i class="fas fa-briefcase"></i>
+							</div>
+						</div>
+						<div class="stat-change positive">
+							<i class="fas fa-arrow-up"></i>
+							<span>+3 new this week</span>
+						</div>
+					</div>
+
+					<div class="stat-card warning">
+						<div class="stat-header">
+							<div>
+								<div class="stat-value">{{ stats.prompts or 0 }}</div>
+								<div class="stat-label">AI Prompts</div>
+							</div>
+							<div class="stat-icon">
+								<i class="fas fa-comment-dots"></i>
+							</div>
+						</div>
+						<div class="stat-change positive">
+							<i class="fas fa-arrow-up"></i>
+							<span>Optimized recently</span>
+						</div>
+					</div>
+
+					<div class="stat-card info">
+						<div class="stat-header">
+							<div>
+								<div class="stat-value">{{ stats.users or 0 }}</div>
+								<div class="stat-label">Active Users</div>
+							</div>
+							<div class="stat-icon">
+								<i class="fas fa-users"></i>
+							</div>
+						</div>
+						<div class="stat-change positive">
+							<i class="fas fa-arrow-up"></i>
+							<span>Growing steadily</span>
+						</div>
+					</div>
+				</div>
+
+				<!-- Recent Activities -->
+				<div class="content-card">
+					<div class="card-header">
+						<h3 class="card-title">Recent Activities</h3>
+						<div class="card-actions">
+							<a href="#" class="card-action-btn">
+								<i class="fas fa-eye"></i>
+								View All
+							</a>
+						</div>
+					</div>
+					<table class="modern-table">
+						<thead>
+							<tr>
+								<th>Admin</th>
+								<th>Action</th>
+								<th>Details</th>
+								<th>Status</th>
+								<th>Date</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for activity in recent_activities %}
+							<tr>
+								<td>
+									<div style="display: flex; align-items: center; gap: 0.75rem;">
+										<div style="width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.875rem;">
+											{% if activity.admin_id %}A{% else %}S{% endif %}
+										</div>
+										<div>
+											<div style="font-weight: 500;">
+												{% if activity.admin_id %}Admin #{{ activity.admin_id }}{% else %}System{% endif %}
+											</div>
+										</div>
+									</div>
+								</td>
+								<td>
+									<span style="font-weight: 500; color: #374151;">{{ activity.action }}</span>
+								</td>
+								<td style="color: #64748b;">{{ activity.details }}</td>
+								<td>
+									<span class="status-badge active">
+										<i class="fas fa-check-circle"></i>
+										Complete
+									</span>
+								</td>
+								<td style="color: #64748b;">
+									{{ activity.created_at.strftime('%Y-%m-%d %H:%M') }}
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+
+				<!-- Quick Actions -->
+				<div class="content-card">
+					<div class="card-header">
+						<h3 class="card-title">Quick Actions</h3>
+						<div class="card-actions">
+							<a href="#" class="card-action-btn">
+								<i class="fas fa-plus"></i>
+								Add New
+							</a>
+						</div>
+					</div>
+					<div class="quick-links-grid">
+						<a href="{{ url_for('admin.resume_dashboard') }}" class="quick-link-card">
+							<div class="quick-link-icon">
+								<i class="fas fa-file-alt"></i>
+							</div>
+							<div class="quick-link-title">Manage Resumes</div>
+							<div class="quick-link-description">Review and process uploaded resumes</div>
+						</a>
+						<a href="{{ url_for('admin.job_categories_page') }}" class="quick-link-card">
+							<div class="quick-link-icon">
+								<i class="fas fa-briefcase"></i>
+							</div>
+							<div class="quick-link-title">Job Categories</div>
+							<div class="quick-link-description">Manage job roles and categories</div>
+						</a>
+						<a href="{{ url_for('admin.prompts_management_page') }}" class="quick-link-card">
+							<div class="quick-link-icon">
+								<i class="fas fa-comment-dots"></i>
+							</div>
+							<div class="quick-link-title">AI Prompts</div>
+							<div class="quick-link-description">Configure AI analysis prompts</div>
+						</a>
+					</div>
+				</div>
+			</main>
+		</div>
+
+		<!-- Modern Footer -->
+		<footer class="admin-footer">
+			<p>&copy; 2025 Resume AI. Transforming hiring with intelligent technology.</p>
+		</footer>
+
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				// Logout functionality
+				document.getElementById("logout-btn").addEventListener("click", function () {
+					handleLogout();
+				});
+
+				// Sidebar navigation active state
+				const sidebarLinks = document.querySelectorAll('.sidebar-menu-link');
+				const currentPath = window.location.pathname;
+				
+				sidebarLinks.forEach(link => {
+					if (link.getAttribute('href') === currentPath) {
+						// Remove active class from all links
+						sidebarLinks.forEach(l => l.classList.remove('active'));
+						// Add active class to current link
+						link.classList.add('active');
+					}
+				});
+
+				// Load initial data with animations
+				loadDashboardStats();
+				animateStatsCards();
+			});
+
+			// Enhanced logout function
+			function handleLogout() {
+				// Show confirmation
+				if (confirm('Are you sure you want to logout?')) {
+					// Clear authentication data
+					document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+					document.cookie = "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+					localStorage.removeItem("access_token");
+					localStorage.removeItem("refresh_token");
+					sessionStorage.clear();
+
+					// Show logout message
+					showNotification('Logged out successfully', 'success');
+
+					// Redirect after short delay
+					setTimeout(() => {
+						window.location.href = "/admin/login";
+					}, 1000);
+				}
+			}
+
+			// Load and update dashboard statistics
+			function loadDashboardStats() {
+				fetch("/admin/api/stats", {
+					headers: {
+						'Authorization': `Bearer ${getToken()}`,
+						'Content-Type': 'application/json'
+					}
+				})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Failed to fetch stats');
+					}
+					return response.json();
+				})
+				.then(data => {
+					updateStatCards(data);
+				})
+				.catch(error => {
+					console.error("Error loading stats:", error);
+					// Use fallback values if API fails
+					updateStatCards({
+						resumes: 0,
+						categories: 0,
+						prompts: 0,
+						users: 0
+					});
+				});
+			}
+
+			// Update stat cards with animation
+			function updateStatCards(data) {
+				const statElements = document.querySelectorAll(".stat-value");
+				const stats = [
+					data.resumes || 0,
+					data.categories || 0,
+					data.prompts || 0,
+					data.users || 0
+				];
+
+				statElements.forEach((element, index) => {
+					if (stats[index] !== undefined) {
+						animateCounter(element, stats[index]);
+					}
+				});
+			}
+
+			// Animate counter numbers
+			function animateCounter(element, target) {
+				const start = 0;
+				const duration = 1500;
+				const startTime = performance.now();
+
+				function updateCounter(currentTime) {
+					const elapsed = currentTime - startTime;
+					const progress = Math.min(elapsed / duration, 1);
+					const current = Math.floor(start + (target - start) * easeOutQuart(progress));
+					
+					element.textContent = current;
+					
+					if (progress < 1) {
+						requestAnimationFrame(updateCounter);
+					} else {
+						element.textContent = target;
+					}
+				}
+
+				requestAnimationFrame(updateCounter);
+			}
+
+			// Easing function for smooth animation
+			function easeOutQuart(t) {
+				return 1 - (--t) * t * t * t;
+			}
+
+			// Animate stats cards on load
+			function animateStatsCards() {
+				const cards = document.querySelectorAll('.stat-card');
+				cards.forEach((card, index) => {
+					card.style.opacity = '0';
+					card.style.transform = 'translateY(20px)';
+					
+					setTimeout(() => {
+						card.style.transition = 'all 0.6s ease';
+						card.style.opacity = '1';
+						card.style.transform = 'translateY(0)';
+					}, index * 100);
+				});
+			}
+
+			// Utility functions
+			function getToken() {
+				const cookieToken = getCookie("access_token");
+				if (cookieToken) return cookieToken;
+				return localStorage.getItem("access_token");
+			}
+
+			function getCookie(name) {
+				const value = `; ${document.cookie}`;
+				const parts = value.split(`; ${name}=`);
+				if (parts.length === 2) return parts.pop().split(";").shift();
+				return null;
+			}
+
+			// Show notification
+			function showNotification(message, type = 'info') {
+				const notification = document.createElement('div');
+				notification.className = `notification ${type}`;
+				notification.style.cssText = `
+					position: fixed;
+					top: 20px;
+					right: 20px;
+					background: ${type === 'success' ? '#10b981' : '#ef4444'};
+					color: white;
+					padding: 1rem 1.5rem;
+					border-radius: 8px;
+					box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+					z-index: 1000;
+					font-weight: 500;
+					transform: translateX(100%);
+					transition: transform 0.3s ease;
+				`;
+				notification.textContent = message;
+
+				document.body.appendChild(notification);
+
+				// Animate in
+				setTimeout(() => {
+					notification.style.transform = 'translateX(0)';
+				}, 100);
+
+				// Auto remove
+				setTimeout(() => {
+					notification.style.transform = 'translateX(100%)';
+					setTimeout(() => {
+						if (document.body.contains(notification)) {
+							document.body.removeChild(notification);
+						}
+					}, 300);
+				}, 3000);
+			}
+
+			// Add real-time updates (optional)
+			setInterval(() => {
+				if (document.visibilityState === 'visible') {
+					loadDashboardStats();
+				}
+			}, 60000); // Update every minute when tab is visible
+		</script>
+	</body>
+</html>

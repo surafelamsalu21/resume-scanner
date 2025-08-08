@@ -1,0 +1,105 @@
+version: "3.8"
+
+services:
+     # Flask Backend Application - Development Version
+     backend:
+          build:
+               context: ..
+               dockerfile: docker/Dockerfile
+          container_name: resume_ai_backend_dev
+          ports:
+               - "${PORT:-5001}:5000"
+          environment:
+               - FLASK_APP=${FLASK_APP:-run.py}
+               - FLASK_ENV=${FLASK_ENV:-development}
+               - SECRET_KEY=${SECRET_KEY:-dev-secret-key}
+               - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${DB_PASSWORD:-secretpassword}@db:5432/${POSTGRES_DB:-resume_ai}
+               - JWT_SECRET_KEY=${JWT_SECRET_KEY:-dev-jwt-secret-key}
+               - OPENAI_API_KEY=${OPENAI_API_KEY}
+               - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
+               - UPLOAD_FOLDER=${UPLOAD_FOLDER:-uploads}
+               - MAX_CONTENT_LENGTH=${MAX_CONTENT_LENGTH:-10485760}
+               - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
+               - DEBUG=${DEBUG:-True}
+               - LOG_LEVEL=${LOG_LEVEL:-DEBUG}
+               - CORS_ORIGINS=${CORS_ORIGINS:-*}
+          volumes:
+               # Mount source code for development
+               - ../:/app
+               - resume_ai_uploads_dev:/app/uploads
+          depends_on:
+               - db
+               - redis
+          networks:
+               - resume_ai_network_dev
+          restart: unless-stopped
+          command: flask run --host=0.0.0.0 --debug
+
+     # PostgreSQL Database
+     db:
+          image: postgres:14-alpine
+          container_name: resume_ai_db_dev
+          environment:
+               - POSTGRES_DB=${POSTGRES_DB:-resume_ai}
+               - POSTGRES_USER=${POSTGRES_USER:-postgres}
+               - POSTGRES_PASSWORD=${DB_PASSWORD:-secretpassword}
+          volumes:
+               - postgres_data_dev:/var/lib/postgresql/data
+          ports:
+               - "5433:5432"
+          networks:
+               - resume_ai_network_dev
+          restart: unless-stopped
+          healthcheck:
+               test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-resume_ai}"]
+               interval: 10s
+               timeout: 5s
+               retries: 5
+
+     # Redis for Caching and Session Management
+     redis:
+          image: redis:7-alpine
+          container_name: resume_ai_redis_dev
+          ports:
+               - "6380:6379"
+          volumes:
+               - redis_data_dev:/data
+          networks:
+               - resume_ai_network_dev
+          restart: unless-stopped
+          healthcheck:
+               test: ["CMD", "redis-cli", "ping"]
+               interval: 10s
+               timeout: 3s
+               retries: 5
+
+     # pgAdmin for Database Management
+     pgadmin:
+          image: dpage/pgadmin4
+          container_name: resume_ai_pgadmin_dev
+          environment:
+               - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL:-admin@admin.com}
+               - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD:-admin}
+          ports:
+               - "5051:80"
+          depends_on:
+               - db
+          networks:
+               - resume_ai_network_dev
+          restart: unless-stopped
+
+volumes:
+     postgres_data_dev:
+          name: resume_ai_postgres_data_dev
+          driver: local
+     redis_data_dev:
+          name: resume_ai_redis_data_dev
+          driver: local
+     resume_ai_uploads_dev:
+          name: resume_ai_uploads_dev
+          driver: local
+
+networks:
+     resume_ai_network_dev:
+          name: resume_ai_network_dev
+          driver: bridge
