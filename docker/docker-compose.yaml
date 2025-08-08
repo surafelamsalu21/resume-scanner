@@ -13,7 +13,12 @@ services:
                - FLASK_APP=${FLASK_APP:-run.py}
                - FLASK_ENV=${FLASK_ENV:-production}
                - SECRET_KEY=${SECRET_KEY}
-               - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${DB_PASSWORD}@db:5432/${POSTGRES_DB:-resume_ai}
+               - DATABASE_URL=postgresql://${POSTGRES_USER:-resume_user}:${POSTGRES_PASSWORD:-resume_password_2024}@${POSTGRES_HOST:-31.220.31.112}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-resume_ai}
+               - POSTGRES_HOST=${POSTGRES_HOST:-31.220.31.112}
+               - POSTGRES_PORT=${POSTGRES_PORT:-5432}
+               - POSTGRES_DB=${POSTGRES_DB:-resume_ai}
+               - POSTGRES_USER=${POSTGRES_USER:-resume_user}
+               - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-resume_password_2024}
                - JWT_SECRET_KEY=${JWT_SECRET_KEY}
                - OPENAI_API_KEY=${OPENAI_API_KEY}
                - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
@@ -28,7 +33,6 @@ services:
                - resume_ai_uploads:/app/uploads
                - ../app/static:/app/app/static:ro
           depends_on:
-               - db
                - redis
           networks:
                - resume_ai_network
@@ -39,38 +43,6 @@ services:
                timeout: 10s
                retries: 3
                start_period: 40s
-
-     # PostgreSQL Database
-     db:
-          image: postgres:14-alpine
-          container_name: resume_ai_db
-          environment:
-               - POSTGRES_DB=${POSTGRES_DB:-resume_ai}
-               - POSTGRES_USER=${POSTGRES_USER:-postgres}
-               - POSTGRES_PASSWORD=${DB_PASSWORD}
-               - POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256
-          volumes:
-               - postgres_data:/var/lib/postgresql/data
-               - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-          ports:
-               - "5433:5432"
-          networks:
-               - resume_ai_network
-          restart: unless-stopped
-          healthcheck:
-               test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-resume_ai}"]
-               interval: 10s
-               timeout: 5s
-               retries: 5
-          command: >
-               postgres
-               -c max_connections=200
-               -c shared_buffers=128MB
-               -c effective_cache_size=256MB
-               -c maintenance_work_mem=64MB
-               -c checkpoint_completion_target=0.9
-               -c wal_buffers=16MB
-               -c default_statistics_target=100
 
      # Redis for Caching and Session Management
      redis:
@@ -112,9 +84,6 @@ services:
                - dev
 
 volumes:
-     postgres_data:
-          name: resume_ai_postgres_data
-          driver: local
      redis_data:
           name: resume_ai_redis_data
           driver: local

@@ -163,13 +163,13 @@ docker-compose -f docker/docker-compose.yaml logs -f
 
 ```bash
 # Health check
-curl http://localhost:8081/health
+curl http://31.220.31.112:8081/health
 
 # Check application
-curl http://localhost:8081/
+curl http://31.220.31.112:8081/
 
-# Check database connection
-docker-compose -f docker/docker-compose.yaml exec backend python -c "from database.db import db; print('Database connected!')"
+# Check database connection (external PostgreSQL server)
+psql -h 31.220.31.112 -U resume_user -d resume_ai -c "SELECT 1;"
 ```
 
 ## 🔄 Deployment Workflow (Same as Your Previous Project)
@@ -343,9 +343,9 @@ docker-compose exec redis redis-cli ping
 ```
 
 ### Monitoring URLs
-- Health Check: `http://your-domain:8081/health`
-- Application: `http://your-domain:8081/`  
-- Admin Panel: `http://your-domain:8081/admin/login`
+- Health Check: `http://31.220.31.112:8081/health`
+- Application: `http://31.220.31.112:8081/`  
+- Admin Panel: `http://31.220.31.112:8081/admin/login`
 
 ## 🔄 Backup Strategy
 
