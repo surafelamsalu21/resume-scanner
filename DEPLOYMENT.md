@@ -65,7 +65,7 @@ docker-compose -f docker/docker-compose.dev.yaml up -d
 # Check logs
 docker-compose -f docker/docker-compose.dev.yaml logs -f
 
-# Access the application
+# Access the application  
 curl http://localhost:5001/health
 ```
 
@@ -134,8 +134,8 @@ JWT_SECRET_KEY=your-production-jwt-secret-key
 OPENAI_API_KEY=sk-your-openai-api-key-here
 OPENAI_MODEL=gpt-4o-mini
 
-# Production Server Settings
-PORT=5000
+# Production Server Settings  
+PORT=8081
 HOST=0.0.0.0
 WORKERS=4
 THREADS=2
@@ -163,10 +163,10 @@ docker-compose -f docker/docker-compose.yaml logs -f
 
 ```bash
 # Health check
-curl http://localhost:5000/health
+curl http://localhost:8081/health
 
 # Check application
-curl http://localhost:5000/
+curl http://localhost:8081/
 
 # Check database connection
 docker-compose -f docker/docker-compose.yaml exec backend python -c "from database.db import db; print('Database connected!')"
@@ -343,9 +343,9 @@ docker-compose exec redis redis-cli ping
 ```
 
 ### Monitoring URLs
-- Health Check: `http://your-domain:5000/health`
-- Application: `http://your-domain:5000/`
-- Admin Panel: `http://your-domain:5000/admin/login`
+- Health Check: `http://your-domain:8081/health`
+- Application: `http://your-domain:8081/`  
+- Admin Panel: `http://your-domain:8081/admin/login`
 
 ## 🔄 Backup Strategy
 

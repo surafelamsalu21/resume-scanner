@@ -111,11 +111,11 @@ start_prod() {
     sleep 15
     
     # Check health
-    if curl -f http://localhost:5000/health > /dev/null 2>&1; then
+    if curl -f http://localhost:8081/health > /dev/null 2>&1; then
         print_success "Production environment started successfully!"
-        print_status "Application: http://localhost:5000"
-        print_status "Database: localhost:5432"
-        print_status "Redis: localhost:6379"
+        print_status "Application: http://localhost:8081"
+        print_status "Database: localhost:5433"
+        print_status "Redis: localhost:6380"
     else
         print_error "Health check failed. Check logs with: $0 logs"
         exit 1
@@ -158,9 +158,9 @@ check_health() {
     print_status "Checking application health..."
     
     # Check production first
-    if curl -f http://localhost:5000/health > /dev/null 2>&1; then
+    if curl -f http://localhost:8081/health > /dev/null 2>&1; then
         print_success "Production environment is healthy"
-        curl -s http://localhost:5000/health | python3 -m json.tool
+        curl -s http://localhost:8081/health | python3 -m json.tool
     elif curl -f http://localhost:5001/health > /dev/null 2>&1; then
         print_success "Development environment is healthy"
         curl -s http://localhost:5001/health | python3 -m json.tool
@@ -211,7 +211,7 @@ update_services() {
         docker-compose -f docker/docker-compose.yaml down
         docker-compose -f docker/docker-compose.yaml up -d --build
         sleep 15
-        if curl -f http://localhost:5000/health > /dev/null 2>&1; then
+        if curl -f http://localhost:8081/health > /dev/null 2>&1; then
             print_success "Production environment updated successfully!"
         else
             print_error "Update failed. Check logs."
