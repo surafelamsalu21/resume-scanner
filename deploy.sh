@@ -75,7 +75,7 @@ start_dev() {
     check_env || exit 1
     
     # Use development compose file
-    docker-compose -f docker/docker-compose.dev.yaml up -d
+    docker compose -f docker/docker-compose.dev.yaml up -d
     
     print_status "Waiting for services to start..."
     sleep 10
@@ -105,7 +105,7 @@ start_prod() {
     fi
     
     # Use production compose file
-    docker-compose -f docker/docker-compose.yaml up -d --build
+    docker compose -f docker/docker-compose.yaml up -d --build
     
     print_status "Waiting for services to start..."
     sleep 15
@@ -128,11 +128,11 @@ stop_services() {
     
     # Stop both development and production services
     if [ -f "docker/docker-compose.dev.yaml" ]; then
-        docker-compose -f docker/docker-compose.dev.yaml down
+        docker compose -f docker/docker-compose.dev.yaml down
     fi
     
     if [ -f "docker/docker-compose.yaml" ]; then
-        docker-compose -f docker/docker-compose.yaml down
+        docker compose -f docker/docker-compose.yaml down
     fi
     
     print_success "All services stopped"
@@ -144,9 +144,9 @@ show_logs() {
     
     # Try production first, then development
     if docker ps | grep -q "resume_ai_backend"; then
-        docker-compose -f docker/docker-compose.yaml logs -f backend
+        docker compose -f docker/docker-compose.yaml logs -f backend
     elif docker ps | grep -q "resume_ai_backend_dev"; then
-        docker-compose -f docker/docker-compose.dev.yaml logs -f backend
+        docker compose -f docker/docker-compose.dev.yaml logs -f backend
     else
         print_error "No running containers found"
         exit 1
@@ -184,9 +184,9 @@ create_backup() {
     
     # Try production first, then development
     if docker ps | grep -q "resume_ai_db"; then
-        docker-compose -f docker/docker-compose.yaml exec -T db pg_dump -U postgres resume_ai > $BACKUP_FILE
+        docker compose -f docker/docker-compose.yaml exec -T db pg_dump -U postgres resume_ai > $BACKUP_FILE
     elif docker ps | grep -q "resume_ai_db_dev"; then
-        docker-compose -f docker/docker-compose.dev.yaml exec -T db pg_dump -U postgres resume_ai > $BACKUP_FILE
+        docker compose -f docker/docker-compose.dev.yaml exec -T db pg_dump -U postgres resume_ai > $BACKUP_FILE
     else
         print_error "No database container found"
         exit 1
@@ -208,8 +208,8 @@ update_services() {
     # Rebuild and restart
     if docker ps | grep -q "resume_ai_backend"; then
         print_status "Updating production environment..."
-        docker-compose -f docker/docker-compose.yaml down
-        docker-compose -f docker/docker-compose.yaml up -d --build
+        docker compose -f docker/docker-compose.yaml down
+        docker compose -f docker/docker-compose.yaml up -d --build
         sleep 15
         if curl -f http://31.220.31.112:8081/health > /dev/null 2>&1; then
             print_success "Production environment updated successfully!"
@@ -218,8 +218,8 @@ update_services() {
         fi
     elif docker ps | grep -q "resume_ai_backend_dev"; then
         print_status "Updating development environment..."
-        docker-compose -f docker/docker-compose.dev.yaml down
-        docker-compose -f docker/docker-compose.dev.yaml up -d --build
+        docker compose -f docker/docker-compose.dev.yaml down
+        docker compose -f docker/docker-compose.dev.yaml up -d --build
         sleep 10
         if curl -f http://localhost:5001/health > /dev/null 2>&1; then
             print_success "Development environment updated successfully!"
